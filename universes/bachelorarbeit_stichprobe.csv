@@ -1,0 +1,409 @@
+ticker,name,country,region,sector,ai_exposure
+74SW.PA,74Software,Frankreich,EU,Tech,High
+ACAD.ST,AcadeMedia AB,Schweden,EU,Tech,High
+AIXA.DE,AIXTRON SE,Deutschland,EU,Tech,High
+AMS.SW,ams-OSRAM AG,Schweiz,EU,Tech,High
+ASM.AS,ASM International NV,Niederlande,EU,Tech,High
+ASML.AS,ASML Holding N.V.,Niederlande,EU,Tech,High
+ABS.WA,Asseco Business Solutions S.A.,Polen,EU,Tech,High
+ACP.WA,Asseco Poland S.A.,Polen,EU,Tech,High
+ATS.VI,AT & S Austria Technologie & Systemtechnik AG,Österreich,EU,Tech,High
+AOF.DE,ATOSS Software SE,Deutschland,EU,Tech,High
+BESI.AS,BE Semiconductor Industries N.V.,Niederlande,EU,Tech,High
+CBRAIN.CO,cBrain A/S,Dänemark,EU,Tech,High
+DSY.PA,Dassault Systemes SE,Frankreich,EU,Tech,High
+ESTC,Elastic N.V.,USA (oder US-Listing),EU,Tech,High
+ELG.DE,Elmos Semiconductor SE,Deutschland,EU,Tech,High
+EQS.PA,Equasens SA,Frankreich,EU,Tech,High
+FCL.AX,FINEOS Corporation Holdings plc,Australien,EU,Tech,High
+SIS.DE,First Sensor AG,Deutschland,EU,Tech,High
+FNOX.ST,Fortnox AB,Schweden,EU,Tech,High
+IFX.DE,Infineon Technologies AG,Deutschland,EU,Tech,High
+1INN.DE,innoscripta SE,Deutschland,EU,Tech,High
+IOS.DE,IONOS Group SE,Deutschland,EU,Tech,High
+LSS.PA,Lectra SA,Frankreich,EU,Tech,High
+LIME.ST,Lime Technologies AB,Schweden,EU,Tech,High
+MELE.BR,Melexis NV,Belgien,EU,Tech,High
+MUM.DE,Mensch und Maschine Software SE,Deutschland,EU,Tech,High
+NCAB.ST,NCAB Group AB,Schweden,EU,Tech,High
+NBIS,Nebius Group N.V.,USA (oder US-Listing),EU,Tech,High
+NEM.DE,Nemetschek SE,Deutschland,EU,Tech,High
+NXU.DE,Nexus AG,Deutschland,EU,Tech,High
+NB2.DE,Northern Data AG,Deutschland,EU,Tech,High
+NXPI,NXP Semiconductors N.V.,USA (oder US-Listing),EU,Tech,High
+OVH.PA,OVH Groupe S.A.,Frankreich,EU,Tech,High
+PLNW.PA,Planisware SAS,Frankreich,EU,Tech,High
+PSAN.DE,PSI Software SE,Deutschland,EU,Tech,High
+TPE.DE,PVA TePla AG,Deutschland,EU,Tech,High
+QTCOM.HE,Qt Group Oyj,Finnland,EU,Tech,High
+RAY-B.ST,RaySearch Laboratories AB,Schweden,EU,Tech,High
+SAP.DE,SAP SE,Deutschland,EU,Tech,High
+SECT-B.ST,Sectra AB,Schweden,EU,Tech,High
+SQNS,Sequans Communications S.A.,USA (oder US-Listing),EU,Tech,High
+WAF.DE,Siltronic AG,Deutschland,EU,Tech,High
+SINCH.ST,Sinch AB,Schweden,EU,Tech,High
+S92.DE,SMA Solar Technology AG,Deutschland,EU,Tech,High
+SOI.PA,Soitec SA,Frankreich,EU,Tech,High
+STMPA.PA,STMicroelectronics N.V.,Frankreich,EU,Tech,High
+SMHN.DE,SUSS MicroTec SE,Deutschland,EU,Tech,High
+TMV.DE,TeamViewer SE,Deutschland,EU,Tech,High
+TPRO.MI,Technoprobe S.p.A.,Italien,EU,Tech,High
+ALTBG.PA,The Blockchain Group,Frankreich,EU,Tech,High
+TOM2.AS,TomTom N.V.,Niederlande,EU,Tech,High
+TRUE-B.ST,Truecaller AB,Schweden,EU,Tech,High
+TXT.MI,TXT e-solutions S.p.A.,Italien,EU,Tech,High
+VRC.WA,Vercom S.A.,Polen,EU,Tech,High
+VIT-B.ST,Vitec Software Group AB,Schweden,EU,Tech,High
+XFAB.PA,X-FAB Silicon Foundries SE,Frankreich,EU,Tech,High
+YUBICO.ST,Yubico AB,Schweden,EU,Tech,High
+ADNT,Adient plc,USA (oder US-Listing),EU,Tech,Middle
+AMBU-B.CO,Ambu A/S,Dänemark,EU,Tech,Middle
+ARJO-B.ST,Arjo AB,Schweden,EU,Tech,Middle
+BMW.DE,Bayerische Motoren Werke AG,Deutschland,EU,Tech,Middle
+BIM.PA,bioMérieux S.A.,Frankreich,EU,Tech,Middle
+BRE.MI,Brembo N.V.,Italien,EU,Tech,Middle
+BUR.PA,Burelle SA,Frankreich,EU,Tech,Middle
+AFX.DE,Carl Zeiss Meditec AG,Deutschland,EU,Tech,Middle
+CIE.MC,"CIE Automotive, S.A.",Spanien,EU,Tech,Middle
+CIR.MI,CIR S.p.A.,Italien,EU,Tech,Middle
+CON.DE,Continental AG,Deutschland,EU,Tech,Middle
+DEMANT.CO,Demant A/S,Dänemark,EU,Tech,Middle
+DIA.MI,DiaSorin S.p.A.,Italien,EU,Tech,Middle
+DOM.ST,Dometic Group AB,Schweden,EU,Tech,Middle
+P911.DE,Dr. Ing. h.c. F. Porsche AG,Deutschland,EU,Tech,Middle
+DRW3.DE,Drägerwerk AG & Co. KGaA,Deutschland,EU,Tech,Middle
+DYVOX.ST,Dynavox Group AB,Schweden,EU,Tech,Middle
+EUZ.DE,Eckert & Ziegler SE,Deutschland,EU,Tech,Middle
+ELN.MI,EL.En. S.p.A.,Italien,EU,Tech,Middle
+EKTA-B.ST,Elekta AB,Schweden,EU,Tech,Middle
+RACE.MI,Ferrari N.V.,Italien,EU,Tech,Middle
+FRVIA.PA,Forvia SE,Frankreich,EU,Tech,Middle
+GEST.MC,"Gestamp Automoción, S.A.",Spanien,EU,Tech,Middle
+GETI-B.ST,Getinge AB,Schweden,EU,Tech,Middle
+GN.CO,GN Store Nord A/S,Dänemark,EU,Tech,Middle
+GVS.MI,GVS S.p.A.,Italien,EU,Tech,Middle
+HLE.DE,HELLA GmbH & Co. KGaA,Deutschland,EU,Tech,Middle
+PHIA.AS,Koninklijke Philips N.V.,Niederlande,EU,Tech,Middle
+MDT,Medtronic plc,USA (oder US-Listing),EU,Tech,Middle
+MBG.DE,Mercedes-Benz Group AG,Deutschland,EU,Tech,Middle
+NOTE.ST,NOTE AB,Schweden,EU,Tech,Middle
+OPM.PA,OPmobility SE,Frankreich,EU,Tech,Middle
+PAH3.DE,Porsche Automobil Holding SE,Deutschland,EU,Tech,Middle
+QDT.PA,Quadient S.A.,Frankreich,EU,Tech,Middle
+RNO.PA,Renault SA,Frankreich,EU,Tech,Middle
+REG1V.HE,Revenio Group Oyj,Finnland,EU,Tech,Middle
+SFQ.DE,SAF-Holland SE,Deutschland,EU,Tech,Middle
+SCANFL.HE,Scanfil Oyj,Finnland,EU,Tech,Middle
+SHA0.DE,Schaeffler AG,Deutschland,EU,Tech,Middle
+STX,Seagate Technology Holdings plc,USA (oder US-Listing),EU,Tech,Middle
+SHL.DE,Siemens Healthineers AG,Deutschland,EU,Tech,Middle
+ARTO.PA,Société Industrielle et Financière de l'Artois,Frankreich,EU,Tech,Middle
+STLAM.MI,Stellantis N.V.,Italien,EU,Tech,Middle
+SUS.ST,Surgical Science Sweden AB,Schweden,EU,Tech,Middle
+TEL,TE Connectivity plc,USA (oder US-Listing),EU,Tech,Middle
+TEP.PA,Teleperformance SE,Frankreich,EU,Tech,Middle
+TRI.PA,Trigano S.A.,Frankreich,EU,Tech,Middle
+FR.PA,Valeo SE,Frankreich,EU,Tech,Middle
+VOW3.DE,Volkswagen AG,Deutschland,EU,Tech,Middle
+VOLCAR-B.ST,Volvo Car AB,Schweden,EU,Tech,Middle
+4IG.BD,4iG Nyrt.,,EU,Tech,Low
+ACN,Accenture plc,USA (oder US-Listing),EU,Tech,Low
+ANOD-B.ST,Addnode Group AB,Schweden,EU,Tech,Low
+ADN1.DE,adesso SE,Deutschland,EU,Tech,Low
+ADV.DE,Adtran Networks SE,Deutschland,EU,Tech,Low
+AFRY.ST,Afry AB,Schweden,EU,Tech,Low
+ATE.PA,Alten S.A.,Frankreich,EU,Tech,Low
+ALC.MC,"Altia Consultores, S.A.",Spanien,EU,Tech,Low
+ARCAD.AS,Arcadis NV,Niederlande,EU,Tech,Low
+ASE.WA,Asseco South Eastern Europe S.A.,Polen,EU,Tech,Low
+ASY.PA,Assystem S.A.,Frankreich,EU,Tech,Low
+ATO.PA,Atos SE,Frankreich,EU,Tech,Low
+AUB.PA,Aubay Société Anonyme,Frankreich,EU,Tech,Low
+BC8.DE,Bechtle AG,Deutschland,EU,Tech,Low
+BVI.PA,Bureau Veritas SA,Frankreich,EU,Tech,Low
+COK.DE,Cancom SE,Deutschland,EU,Tech,Low
+CAP.PA,Capgemini SE,Frankreich,EU,Tech,Low
+D6H.DE,DATAGROUP SE,Deutschland,EU,Tech,Low
+EVS.BR,EVS Broadcast Equipment SA,Belgien,EU,Tech,Low
+GFT.DE,GFT Technologies SE,Deutschland,EU,Tech,Low
+DOM.MC,"Global Dominion Access, S.A.",Spanien,EU,Tech,Low
+GLOB,Globant S.A.,USA (oder US-Listing),EU,Tech,Low
+HMS.ST,HMS Networks AB,Schweden,EU,Tech,Low
+IDR.MC,"Indra Sistemas, S.A.",Spanien,EU,Tech,Low
+SANT.DE,Kontron AG,Deutschland,EU,Tech,Low
+NA9.DE,Nagarro SE,Deutschland,EU,Tech,Low
+NETC.CO,Netcompany Group A/S,Dänemark,EU,Tech,Low
+NRO.PA,Neurones S.A.,Frankreich,EU,Tech,Low
+NOKIA.HE,Nokia Oyj,Finnland,EU,Tech,Low
+QUEST.AT,Quest Holdings S.A.,Griechenland,EU,Tech,Low
+REY.MI,Reply S.p.A.,Italien,EU,Tech,Low
+YSN.DE,secunet Security Networks AG,Deutschland,EU,Tech,Low
+SES.MI,SeSa S.p.A.,Italien,EU,Tech,Low
+SHF.DE,SNP Schneider-Neureither & Partner SE,Deutschland,EU,Tech,Low
+SOP.PA,Sopra Steria Group SA,Frankreich,EU,Tech,Low
+SGN.WA,Sygnity S.A.,Polen,EU,Tech,Low
+ERIC-B.ST,Telefonaktiebolaget LM Ericsson,Schweden,EU,Tech,Low
+TIETO.HE,TietoEVRY Oyj,Finnland,EU,Tech,Low
+TNXT.MI,Tinexta S.p.A.,Italien,EU,Tech,Low
+WAVE.PA,Wavestone SA,Frankreich,EU,Tech,Low
+WKL.AS,Wolters Kluwer N.V.,Niederlande,EU,Tech,Low
+RMS.PA,Hermès International Société en commandite par actions,Frankreich,EU,Non-Tech,Keine
+MC.PA,LVMH Moët Hennessy - Louis Vuitton SE,Frankreich,EU,Non-Tech,Keine
+CDI.PA,Christian Dior SE,Frankreich,EU,Non-Tech,Keine
+ADS.DE,adidas AG,Deutschland,EU,Non-Tech,Keine
+KER.PA,Kering SA,Frankreich,EU,Non-Tech,Keine
+1913.HK,Prada S.p.A.,Hongkong,EU,Non-Tech,Keine
+CRH,CRH plc,USA (oder US-Listing),EU,Non-Tech,Keine
+HEI.DE,Heidelberg Materials AG,Deutschland,EU,Non-Tech,Keine
+JHX.AX,James Hardie Industries plc,Australien,EU,Non-Tech,Keine
+BZU.MI,Buzzi S.p.A.,Italien,EU,Non-Tech,Keine
+WIE.VI,Wienerberger AG,Österreich,EU,Non-Tech,Keine
+TITC.VI,Titan S.A.,Österreich,EU,Non-Tech,Keine
+SAN.MC,"Banco Santander, S.A.",Spanien,EU,Non-Tech,Keine
+UCG.MI,UniCredit S.p.A.,Italien,EU,Non-Tech,Keine
+ISP.MI,Intesa Sanpaolo S.p.A.,Italien,EU,Non-Tech,Keine
+BNP.PA,BNP Paribas SA,Frankreich,EU,Non-Tech,Keine
+BBVA.MC,"Banco Bilbao Vizcaya Argentaria, S.A.",Spanien,EU,Non-Tech,Keine
+INGA.AS,ING Groep N.V.,Niederlande,EU,Non-Tech,Keine
+IBE.MC,"Iberdrola, S.A.",Spanien,EU,Non-Tech,Keine
+ENEL.MI,Enel SpA,Italien,EU,Non-Tech,Keine
+ELE.MC,"Endesa, S.A.",Spanien,EU,Non-Tech,Keine
+CEZ.PR,"CEZ, a. s.",Tschechien,EU,Non-Tech,Keine
+VER.VI,VERBUND AG,Österreich,EU,Non-Tech,Keine
+EBK.DE,EnBW Energie Baden-Württemberg AG,Deutschland,EU,Non-Tech,Keine
+AD.AS,Koninklijke Ahold Delhaize N.V.,Niederlande,EU,Non-Tech,Keine
+JMT.LS,"Jerónimo Martins, SGPS, S.A.",Portugal,EU,Non-Tech,Keine
+DNP.WA,Dino Polska S.A.,Polen,EU,Non-Tech,Keine
+KESKOB.HE,Kesko Oyj,Finnland,EU,Non-Tech,Keine
+AXFO.ST,Axfood AB (publ),Schweden,EU,Non-Tech,Keine
+ZAB.WA,Zabka Group S.A.,Polen,EU,Non-Tech,Keine
+AON,Aon plc,USA (oder US-Listing),EU,Non-Tech,Keine
+WTW,Willis Towers Watson Public Limited Company,USA (oder US-Listing),EU,Non-Tech,Keine
+BN.PA,Danone S.A.,Frankreich,EU,Non-Tech,Keine
+KRZ.IR,Kerry Group plc,Irland,EU,Non-Tech,Keine
+JBS,JBS N.V.,USA (oder US-Listing),EU,Non-Tech,Keine
+JDEP.AS,JDE Peet's N.V.,Niederlande,EU,Non-Tech,Keine
+LOTB.BR,Lotus Bakeries NV,Belgien,EU,Non-Tech,Keine
+AAK.ST,AAK AB (publ.),Schweden,EU,Non-Tech,Keine
+NOVO-B.CO,Novo Nordisk A/S,Dänemark,EU,Non-Tech,Keine
+SAN.PA,Sanofi S.A.,Frankreich,EU,Non-Tech,Keine
+MRK.DE,Merck KGaA,Deutschland,EU,Non-Tech,Keine
+UCB.BR,UCB SA,Belgien,EU,Non-Tech,Keine
+BAYN.DE,Bayer Aktiengesellschaft,Deutschland,EU,Non-Tech,Keine
+REC.MI,Recordati Industria Chimica e Farmaceutica S.p.A.,Italien,EU,Non-Tech,Keine
+SAMPO.HE,Sampo Oyj,Finnland,EU,Non-Tech,Keine
+TRYG.CO,Tryg A/S,Dänemark,EU,Non-Tech,Keine
+ALMB.CO,Alm. Brand A/S,Dänemark,EU,Non-Tech,Keine
+COFA.PA,COFACE SA,Frankreich,EU,Non-Tech,Keine
+LDA.MC,"Línea Directa Aseguradora, S.A.",Spanien,EU,Non-Tech,Keine
+ATEN,"A10 Networks, Inc.",USA (oder US-Listing),USA,Tech,High
+ACIW,"ACI Worldwide, Inc.",USA (oder US-Listing),USA,Tech,High
+ACMR,"ACM Research, Inc.",USA (oder US-Listing),USA,Tech,High
+ADEA,Adeia Inc.,USA (oder US-Listing),USA,Tech,High
+ADBE,Adobe Inc.,USA (oder US-Listing),USA,Tech,High
+ATGE,Adtalem Global Education Inc.,USA (oder US-Listing),USA,Tech,High
+AMD,"Advanced Micro Devices, Inc.",USA (oder US-Listing),USA,Tech,High
+AGYS,"Agilysys, Inc.",USA (oder US-Listing),USA,Tech,High
+AKAM,"Akamai Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+ALRM,"Alarm.com Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+ALKT,"Alkami Technology, Inc.",USA (oder US-Listing),USA,Tech,High
+ALGM,"Allegro MicroSystems, Inc.",USA (oder US-Listing),USA,Tech,High
+APEI,"American Public Education, Inc.",USA (oder US-Listing),USA,Tech,High
+AMKR,"Amkor Technology, Inc.",USA (oder US-Listing),USA,Tech,High
+APH,Amphenol Corporation,USA (oder US-Listing),USA,Tech,High
+AMPL,"Amplitude, Inc.",USA (oder US-Listing),USA,Tech,High
+ADI,"Analog Devices, Inc.",USA (oder US-Listing),USA,Tech,High
+ANSS,"ANSYS, Inc.",USA (oder US-Listing),USA,Tech,High
+APPF,"AppFolio, Inc.",USA (oder US-Listing),USA,Tech,High
+APPN,Appian Corporation,USA (oder US-Listing),USA,Tech,High
+APLD,Applied Digital Corporation,USA (oder US-Listing),USA,Tech,High
+AMAT,"Applied Materials, Inc.",USA (oder US-Listing),USA,Tech,High
+APP,AppLovin Corporation,USA (oder US-Listing),USA,Tech,High
+ASAN,"Asana, Inc.",USA (oder US-Listing),USA,Tech,High
+TEAM,Atlassian Corporation,USA (oder US-Listing),USA,Tech,High
+ADSK,"Autodesk, Inc.",USA (oder US-Listing),USA,Tech,High
+ACLS,"Axcelis Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+BELF.A,Bel Fuse Inc.,,USA,Tech,High
+BDC,Belden Inc.,USA (oder US-Listing),USA,Tech,High
+BSY,"Bentley Systems, Incorporated",USA (oder US-Listing),USA,Tech,High
+BILL,"BILL Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+BMNR,"Bitmine Immersion Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+BLKB,"Blackbaud, Inc.",USA (oder US-Listing),USA,Tech,High
+BL,"BlackLine, Inc.",USA (oder US-Listing),USA,Tech,High
+BOX,"Box, Inc.",USA (oder US-Listing),USA,Tech,High
+BRZE,"Braze, Inc.",USA (oder US-Listing),USA,Tech,High
+BFAM,Bright Horizons Family Solutions Inc.,USA (oder US-Listing),USA,Tech,High
+AVGO,Broadcom Inc.,USA (oder US-Listing),USA,Tech,High
+AI,"C3.ai, Inc.",USA (oder US-Listing),USA,Tech,High
+CDNS,"Cadence Design Systems, Inc.",USA (oder US-Listing),USA,Tech,High
+CCCS,CCC Intelligent Solutions Holdings Inc.,USA (oder US-Listing),USA,Tech,High
+CERT,"Certara, Inc.",USA (oder US-Listing),USA,Tech,High
+CEVA,"CEVA, Inc.",USA (oder US-Listing),USA,Tech,High
+CRCL,"Circle Internet Group, Inc.",USA (oder US-Listing),USA,Tech,High
+CRUS,"Cirrus Logic, Inc.",USA (oder US-Listing),USA,Tech,High
+CLSK,"CleanSpark, Inc.",USA (oder US-Listing),USA,Tech,High
+NET,"Cloudflare, Inc.",USA (oder US-Listing),USA,Tech,High
+COHR,Coherent Corp.,USA (oder US-Listing),USA,Tech,High
+COHU,"Cohu, Inc.",USA (oder US-Listing),USA,Tech,High
+CVLT,"Commvault Systems, Inc.",USA (oder US-Listing),USA,Tech,High
+CFLT,"Confluent, Inc.",USA (oder US-Listing),USA,Tech,High
+CORZ,"Core Scientific, Inc.",USA (oder US-Listing),USA,Tech,High
+CRWV,"CoreWeave, Inc.",USA (oder US-Listing),USA,Tech,High
+GLW,Corning Incorporated,USA (oder US-Listing),USA,Tech,High
+BASE,"Couchbase, Inc.",USA (oder US-Listing),USA,Tech,High
+COUR,"Coursera, Inc.",USA (oder US-Listing),USA,Tech,High
+CRWD,"CrowdStrike Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+QBTS,D-Wave Quantum Inc.,USA (oder US-Listing),USA,Tech,High
+DJCO,Daily Journal Corporation,USA (oder US-Listing),USA,Tech,High
+DDOG,"Datadog, Inc.",USA (oder US-Listing),USA,Tech,High
+APPS,"Digital Turbine, Inc.",USA (oder US-Listing),USA,Tech,High
+DOCN,"DigitalOcean Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+DIOD,Diodes Incorporated,USA (oder US-Listing),USA,Tech,High
+DOCU,"DocuSign, Inc.",USA (oder US-Listing),USA,Tech,High
+DLB,"Dolby Laboratories, Inc.",USA (oder US-Listing),USA,Tech,High
+DOMO,"Domo, Inc.",USA (oder US-Listing),USA,Tech,High
+DBX,"Dropbox, Inc.",USA (oder US-Listing),USA,Tech,High
+DT,"Dynatrace, Inc.",USA (oder US-Listing),USA,Tech,High
+ENPH,"Enphase Energy, Inc.",USA (oder US-Listing),USA,Tech,High
+ENTG,"Entegris, Inc.",USA (oder US-Listing),USA,Tech,High
+EVH,"Evolent Health, Inc.",USA (oder US-Listing),USA,Tech,High
+FICO,Fair Isaac Corporation,USA (oder US-Listing),USA,Tech,High
+FSLY,"Fastly, Inc.",USA (oder US-Listing),USA,Tech,High
+FSLR,"First Solar, Inc.",USA (oder US-Listing),USA,Tech,High
+FIVN,"Five9, Inc.",USA (oder US-Listing),USA,Tech,High
+FORM,"FormFactor, Inc.",USA (oder US-Listing),USA,Tech,High
+FTNT,"Fortinet, Inc.",USA (oder US-Listing),USA,Tech,High
+FRSH,Freshworks Inc.,USA (oder US-Listing),USA,Tech,High
+GEN,Gen Digital Inc.,USA (oder US-Listing),USA,Tech,High
+GTLB,GitLab Inc.,USA (oder US-Listing),USA,Tech,High
+GDDY,GoDaddy Inc.,USA (oder US-Listing),USA,Tech,High
+GHC,Graham Holdings Company,USA (oder US-Listing),USA,Tech,High
+LOPE,"Grand Canyon Education, Inc.",USA (oder US-Listing),USA,Tech,High
+GWRE,"Guidewire Software, Inc.",USA (oder US-Listing),USA,Tech,High
+HSTM,"HealthStream, Inc.",USA (oder US-Listing),USA,Tech,High
+HUBS,"HubSpot, Inc.",USA (oder US-Listing),USA,Tech,High
+HUT,Hut 8 Corp.,USA (oder US-Listing),USA,Tech,High
+IIIV,"i3 Verticals, Inc.",USA (oder US-Listing),USA,Tech,High
+PI,"Impinj, Inc.",USA (oder US-Listing),USA,Tech,High
+INDI,"indie Semiconductor, Inc.",USA (oder US-Listing),USA,Tech,High
+INFA,Informatica Inc.,USA (oder US-Listing),USA,Tech,High
+INTC,Intel Corporation,USA (oder US-Listing),USA,Tech,High
+IDCC,"InterDigital, Inc.",USA (oder US-Listing),USA,Tech,High
+INTU,Intuit Inc.,USA (oder US-Listing),USA,Tech,High
+JAMF,Jamf Holding Corp.,USA (oder US-Listing),USA,Tech,High
+KLAC,KLA Corporation,USA (oder US-Listing),USA,Tech,High
+KN,Knowles Corporation,USA (oder US-Listing),USA,Tech,High
+KLIC,"Kulicke and Soffa Industries, Inc.",USA (oder US-Listing),USA,Tech,High
+LRCX,Lam Research Corporation,USA (oder US-Listing),USA,Tech,High
+LSCC,Lattice Semiconductor Corporation,USA (oder US-Listing),USA,Tech,High
+LAUR,"Laureate Education, Inc.",USA (oder US-Listing),USA,Tech,High
+360.AX,"Life360, Inc.",Australien,USA,Tech,High
+LFUS,"Littelfuse, Inc.",USA (oder US-Listing),USA,Tech,High
+RAMP,"LiveRamp Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+MTSI,"MACOM Technology Solutions Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+MANH,"Manhattan Associates, Inc.",USA (oder US-Listing),USA,Tech,High
+MARA,"MARA Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+MRVL,"Marvell Technology, Inc.",USA (oder US-Listing),USA,Tech,High
+MXL,"MaxLinear, Inc.",USA (oder US-Listing),USA,Tech,High
+MCHP,Microchip Technology Incorporated,USA (oder US-Listing),USA,Tech,High
+MU,"Micron Technology, Inc.",USA (oder US-Listing),USA,Tech,High
+MSFT,Microsoft Corporation,USA (oder US-Listing),USA,Tech,High
+MSTR,MicroStrategy Incorporated,USA (oder US-Listing),USA,Tech,High
+MKSI,MKS Inc.,USA (oder US-Listing),USA,Tech,High
+MDB,"MongoDB, Inc.",USA (oder US-Listing),USA,Tech,High
+MPWR,"Monolithic Power Systems, Inc.",USA (oder US-Listing),USA,Tech,High
+NCNO,"nCino, Inc.",USA (oder US-Listing),USA,Tech,High
+VYX,NCR Voyix Corporation,USA (oder US-Listing),USA,Tech,High
+NXTT,Next Technology Holding Inc.,USA (oder US-Listing),USA,Tech,High
+NN,NextNav Inc.,USA (oder US-Listing),USA,Tech,High
+NTNX,"Nutanix, Inc.",USA (oder US-Listing),USA,Tech,High
+NVDA,NVIDIA Corporation,USA (oder US-Listing),USA,Tech,High
+OKTA,"Okta, Inc.",USA (oder US-Listing),USA,Tech,High
+ON,ON Semiconductor Corporation,USA (oder US-Listing),USA,Tech,High
+OSPN,OneSpan Inc.,USA (oder US-Listing),USA,Tech,High
+ONTO,Onto Innovation Inc.,USA (oder US-Listing),USA,Tech,High
+ORCL,Oracle Corporation,USA (oder US-Listing),USA,Tech,High
+PD,"PagerDuty, Inc.",USA (oder US-Listing),USA,Tech,High
+PLTR,Palantir Technologies Inc.,USA (oder US-Listing),USA,Tech,High
+PANW,"Palo Alto Networks, Inc.",USA (oder US-Listing),USA,Tech,High
+PDFS,"PDF Solutions, Inc.",USA (oder US-Listing),USA,Tech,High
+PEGA,Pegasystems Inc.,USA (oder US-Listing),USA,Tech,High
+PENG,"Penguin Solutions, Inc.",USA (oder US-Listing),USA,Tech,High
+PRDO,Perdoceo Education Corporation,USA (oder US-Listing),USA,Tech,High
+PLAB,"Photronics, Inc.",USA (oder US-Listing),USA,Tech,High
+PHR,"Phreesia, Inc.",USA (oder US-Listing),USA,Tech,High
+PRCH,"Porch Group, Inc.",USA (oder US-Listing),USA,Tech,High
+POWI,"Power Integrations, Inc.",USA (oder US-Listing),USA,Tech,High
+PCOR,"Procore Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+PRGS,Progress Software Corporation,USA (oder US-Listing),USA,Tech,High
+PRO,"PROS Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+PTC,PTC Inc.,USA (oder US-Listing),USA,Tech,High
+QRVO,"Qorvo, Inc.",USA (oder US-Listing),USA,Tech,High
+QCOM,QUALCOMM Incorporated,USA (oder US-Listing),USA,Tech,High
+QLYS,"Qualys, Inc.",USA (oder US-Listing),USA,Tech,High
+RMBS,Rambus Inc.,USA (oder US-Listing),USA,Tech,High
+RPD,"Rapid7, Inc.",USA (oder US-Listing),USA,Tech,High
+RDVT,"Red Violet, Inc.",USA (oder US-Listing),USA,Tech,High
+RNG,"RingCentral, Inc.",USA (oder US-Listing),USA,Tech,High
+RIOT,"Riot Platforms, Inc.",USA (oder US-Listing),USA,Tech,High
+ROG,Rogers Corporation,USA (oder US-Listing),USA,Tech,High
+ROP,"Roper Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+RBRK,"Rubrik, Inc.",USA (oder US-Listing),USA,Tech,High
+CRM,"Salesforce, Inc.",USA (oder US-Listing),USA,Tech,High
+SDGR,"Schrodinger, Inc.",USA (oder US-Listing),USA,Tech,High
+SEMR,"Semrush Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+SMTC,Semtech Corporation,USA (oder US-Listing),USA,Tech,High
+S,"SentinelOne, Inc.",USA (oder US-Listing),USA,Tech,High
+NOW,"ServiceNow, Inc.",USA (oder US-Listing),USA,Tech,High
+SLAB,Silicon Laboratories Inc.,USA (oder US-Listing),USA,Tech,High
+SWKS,"Skyworks Solutions, Inc.",USA (oder US-Listing),USA,Tech,High
+SNOW,Snowflake Inc.,USA (oder US-Listing),USA,Tech,High
+SEDG,"SolarEdge Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+CXM,"Sprinklr, Inc.",USA (oder US-Listing),USA,Tech,High
+SPT,"Sprout Social, Inc.",USA (oder US-Listing),USA,Tech,High
+SPSC,"SPS Commerce, Inc.",USA (oder US-Listing),USA,Tech,High
+STRA,"Strategic Education, Inc.",USA (oder US-Listing),USA,Tech,High
+LRN,"Stride, Inc.",USA (oder US-Listing),USA,Tech,High
+SYNA,Synaptics Incorporated,USA (oder US-Listing),USA,Tech,High
+SNPS,"Synopsys, Inc.",USA (oder US-Listing),USA,Tech,High
+TDOC,"Teladoc Health, Inc.",USA (oder US-Listing),USA,Tech,High
+TENB,"Tenable Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+TDC,Teradata Corporation,USA (oder US-Listing),USA,Tech,High
+TER,"Teradyne, Inc.",USA (oder US-Listing),USA,Tech,High
+WULF,TeraWulf Inc.,USA (oder US-Listing),USA,Tech,High
+TXN,Texas Instruments Incorporated,USA (oder US-Listing),USA,Tech,High
+TWLO,Twilio Inc.,USA (oder US-Listing),USA,Tech,High
+TYL,"Tyler Technologies, Inc.",USA (oder US-Listing),USA,Tech,High
+UDMY,"Udemy, Inc.",USA (oder US-Listing),USA,Tech,High
+PATH,UiPath Inc.,USA (oder US-Listing),USA,Tech,High
+UCTT,"Ultra Clean Holdings, Inc.",USA (oder US-Listing),USA,Tech,High
+U,Unity Software Inc.,USA (oder US-Listing),USA,Tech,High
+OLED,Universal Display Corporation,USA (oder US-Listing),USA,Tech,High
+UTI,"Universal Technical Institute, Inc.",USA (oder US-Listing),USA,Tech,High
+VRNS,"Varonis Systems, Inc.",USA (oder US-Listing),USA,Tech,High
+VECO,Veeco Instruments Inc.,USA (oder US-Listing),USA,Tech,High
+VEEV,Veeva Systems Inc.,USA (oder US-Listing),USA,Tech,High
+VRNT,Verint Systems Inc.,USA (oder US-Listing),USA,Tech,High
+VRSN,"VeriSign, Inc.",USA (oder US-Listing),USA,Tech,High
+VERX,"Vertex, Inc.",USA (oder US-Listing),USA,Tech,High
+VSH,"Vishay Intertechnology, Inc.",USA (oder US-Listing),USA,Tech,High
+WDAY,"Workday, Inc.",USA (oder US-Listing),USA,Tech,High
+WK,Workiva Inc.,USA (oder US-Listing),USA,Tech,High
+YEXT,"Yext, Inc.",USA (oder US-Listing),USA,Tech,High
+ZETA,Zeta Global Holdings Corp.,USA (oder US-Listing),USA,Tech,High
+ZM,Zoom Communications Inc.,USA (oder US-Listing),USA,Tech,High
+ZS,"Zscaler, Inc.",USA (oder US-Listing),USA,Tech,High
+ALFA.L,Alfa Financial Software Holdings PLC,Vereinigtes Königreich,UK,Tech,High
+AWE.L,Alphawave IP Group plc,Vereinigtes Königreich,UK,Tech,High
+ARM,Arm Holdings plc,USA (oder US-Listing),UK,Tech,High
+BYIT.L,Bytes Technology Group plc,Vereinigtes Königreich,UK,Tech,High
+CER.L,Cerillion Plc,Vereinigtes Königreich,UK,Tech,High
+CRW.L,Craneware plc,Vereinigtes Königreich,UK,Tech,High
+FDP.L,FD Technologies plc,Vereinigtes Königreich,UK,Tech,High
+GBG.L,GB Group plc,Vereinigtes Königreich,UK,Tech,High
+PSON.L,Pearson plc,Vereinigtes Königreich,UK,Tech,High
+PINE.L,Pinewood Technologies Group PLC,Vereinigtes Königreich,UK,Tech,High
+RZLV,Rezolve AI PLC,USA (oder US-Listing),UK,Tech,High
+TEMN.SW,Temenos AG,Schweiz,UK,Tech,High
+SGE.L,The Sage Group plc,Vereinigtes Königreich,UK,Tech,High
+UBXN.SW,u-blox Holding AG,Schweiz,UK,Tech,High

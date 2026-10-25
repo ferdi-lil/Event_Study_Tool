@@ -71,7 +71,8 @@ def main() -> int:
     print(f"\nDatenpaket: {out}")
     print(f"  {prices.shape[1]}/{len(tickers)} Ticker geladen – Quellen: {counts}")
     if missing:
-        print(f"  Ohne Daten ({len(missing)}): {', '.join(missing[:20])}{' …' if len(missing) > 20 else ''}")
+        print(f"  Ohne Daten ({len(missing)}, meist delistet/übernommen oder später an die Börse gegangen):")
+        print("   ", ", ".join(missing))
     for region, status in factors.items():
         print(f"  FF3 {region}: {status}")
     return 0

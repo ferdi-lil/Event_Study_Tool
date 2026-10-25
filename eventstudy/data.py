@@ -1,7 +1,10 @@
 """Price download, return calculation and data cleaning."""
 from __future__ import annotations
 
+import contextlib
 import io
+import logging
+import warnings
 import zipfile
 from pathlib import Path
 
@@ -124,8 +127,14 @@ class YahooProvider:
         try:
             import yfinance as yf
 
-            data = yf.download(tickers, start=str(start), end=str(end), progress=False,
-                               auto_adjust=True, group_by="column", threads=True)
+            # yfinance floods the console with pandas deprecation warnings and per-ticker error
+            # lines; missing tickers are reported by us (protocol / fetch script) instead.
+            logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+            with warnings.catch_warnings(), contextlib.redirect_stdout(io.StringIO()), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                warnings.simplefilter("ignore")
+                data = yf.download(tickers, start=str(start), end=str(end), progress=False,
+                                   auto_adjust=True, group_by="column", threads=True)
         except Exception as exc:
             for t in tickers:
                 self.errors[t] = f"yfinance: {exc}"

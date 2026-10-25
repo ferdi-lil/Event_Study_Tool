@@ -1,3 +1,4 @@
+import json
 from datetime import date
 
 import pandas as pd
@@ -6,7 +7,7 @@ import streamlit as st
 from eventstudy import ai, storage
 from eventstudy.checks import check_config
 from eventstudy.config import RETURN_MODELS, TESTS, Event, StudyConfig
-from eventstudy.data import FrameProvider, YahooProvider, read_wide_csv
+from eventstudy.data import BundleProvider, FrameProvider, YahooProvider, list_bundles, read_wide_csv
 from eventstudy.engine import run_study
 from ui.group_editor import group_editor, group_list
 from ui.state import draft, open_results
@@ -198,10 +199,30 @@ elif step == 4:
 # ------------------------------------------------------------------- step 6
 else:
     st.subheader("Datenquelle")
-    src = st.radio("Kurse", ["yahoo", "upload"], index=0 if cfg.data_source == "yahoo" else 1, horizontal=True,
-                   format_func={"yahoo": "Yahoo Finance (automatisch)", "upload": "Eigene CSV hochladen"}.get)
+    sources = ["yahoo", "bundle", "upload"]
+    src = st.radio("Kurse", sources, index=sources.index(cfg.data_source) if cfg.data_source in sources else 0,
+                   horizontal=True, format_func={"yahoo": "Online laden (Yahoo, mit Fallbacks)",
+                                                 "bundle": "Datenpaket (data/…)",
+                                                 "upload": "Eigene CSV hochladen"}.get)
     cfg.data_source = src
-    upload = None
+    upload = bundle = None
+    if src == "yahoo":
+        st.caption("Reihenfolge: yfinance → Yahoo-Chart-API (wie R/quantmod) → Stooq (nicht dividendenbereinigt, "
+                   "wird im Protokoll markiert). FF3-Faktoren: Cache → Datei in `data/factors/` → French-Website.")
+    if src == "bundle":
+        bundles = list_bundles()
+        if not bundles:
+            st.warning("Noch kein Datenpaket vorhanden. Auf einem Rechner mit Internet erzeugen:")
+        else:
+            bundle = st.selectbox("Datenpaket", bundles, format_func=lambda p: p.name)
+            man = bundle / "manifest.json"
+            if man.exists():
+                st.json(json.loads(man.read_text(encoding="utf-8")), expanded=False)
+        st.code(f"python scripts/fetch_data.py studies/{st.session_state.get('draft_slug') or '<slug>'}/config.json\n"
+                "# oder, falls nur R an Yahoo kommt:\n"
+                f"Rscript scripts/fetch_data.R studies/{st.session_state.get('draft_slug') or '<slug>'}/config.json",
+                language="bash")
+        st.caption("Vorher die Studie als Entwurf speichern, damit die config.json existiert.")
     if src == "upload":
         kind = st.radio("Inhalt der Datei", ["Kurse", "Renditen"], horizontal=True)
         upload = st.file_uploader("CSV: erste Spalte Datum, danach eine Spalte je Ticker (inkl. Marktindex)", type=["csv"])
@@ -230,17 +251,22 @@ else:
         st.session_state["draft_slug"] = storage.save_config(cfg, st.session_state.get("draft_slug"))
         st.success("Gespeichert.")
     if b.button("🚀 Event Study durchführen", type="primary", use_container_width=True,
-                disabled=bool(errors) or (src == "upload" and upload is None)):
+                disabled=bool(errors) or (src == "upload" and upload is None) or (src == "bundle" and bundle is None)):
         slug = storage.save_config(cfg, st.session_state.get("draft_slug"))
         st.session_state["draft_slug"] = slug
+        factor_loader = None
         if src == "upload":
             frame = read_wide_csv(upload)
             provider = FrameProvider(returns=frame) if kind == "Renditen" else FrameProvider(prices=frame)
+        elif src == "bundle":
+            provider = BundleProvider(bundle)
+            factor_loader = provider.factor_loader
         else:
             provider = YahooProvider()
         bar = st.progress(0.0, "Starte …")
         try:
-            result = run_study(cfg, provider=provider, progress_cb=lambda f, t: bar.progress(f, t))
+            result = run_study(cfg, provider=provider, factor_loader=factor_loader,
+                               progress_cb=lambda f, t: bar.progress(f, t))
         except Exception as exc:  # show any data/network problem to the user
             st.error(f"Die Studie konnte nicht berechnet werden: {exc}")
             st.stop()

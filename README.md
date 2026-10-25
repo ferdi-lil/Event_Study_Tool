@@ -40,9 +40,23 @@ alles außer den KI-Vorschlägen.
 
 | Quelle | Wofür | Hinweis |
 |---|---|---|
-| Yahoo Finance | Kurse (Adjusted Close) und Indizes | kostenlos; Ergebnisse werden in `cache/` zwischengespeichert |
-| Kenneth R. French Data Library | FF3-Faktoren (Europe, US, Developed …) | täglich; ohne Verbindung wird FF3 **übersprungen**, es werden keine Ersatzdaten erzeugt |
+| Yahoo Finance | Kurse (Adjusted Close) und Indizes | Abruf in dieser Reihenfolge: `yfinance` → Yahoo-Chart-API direkt (wie R/quantmod, ohne Cookie/Crumb) → Stooq (nicht dividendenbereinigt, wird im Protokoll markiert); Ergebnisse landen in `cache/` |
+| Kenneth R. French Data Library | FF3-Faktoren (Europe, US, Developed …) | Reihenfolge: Cache → ZIP in `data/factors/` (Browser-Download) → Website. Ohne Daten wird FF3 **übersprungen**, es werden keine Ersatzdaten erzeugt |
+| Datenpaket `data/<name>/` | alle Kurse + Faktoren einer Studie | per `scripts/fetch_data.py` oder `scripts/fetch_data.R` erzeugt, siehe unten |
 | CSV-Upload | eigene Kurse oder Renditen (Refinitiv, Bloomberg, CRSP …) | erste Spalte Datum, dann eine Spalte je Ticker inkl. Index |
+
+### Wenn der Online-Abruf nicht klappt: Datenpaket
+
+Das entspricht dem Weg „Daten in R laden, dann die Excel-Datei einlesen“, nur automatisiert:
+
+```bash
+# Studie im Assistenten als Entwurf speichern, dann auf einem Rechner mit Internet:
+python scripts/fetch_data.py studies/<slug>/config.json          # oder eine Vorlage aus templates/
+Rscript scripts/fetch_data.R studies/<slug>/config.json          # falls nur R an Yahoo kommt
+```
+
+Danach im Assistenten in Schritt 6 „Datenpaket“ wählen. Ein Paket in `data/` kann auch committet
+werden; dann lässt sich die Studie z. B. in einer Cloud-Session ohne Internetzugang rechnen.
 
 Unternehmensuniversen für die angeleitete Auswahl liegen in `universes/` (CSV mit mindestens einer `ticker`-Spalte).
 `bachelorarbeit_stichprobe.csv` enthält die 408 Unternehmen der Arbeit mit Region, Sektor und KI-Exposition.

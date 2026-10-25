@@ -50,6 +50,17 @@ class Progress:
             self.callback(min(max(frac, 0.0), 1.0), text)
 
 
+def _log_sources(provider, protocol: Protocol) -> None:
+    sources = getattr(provider, "sources", {}) or {}
+    if sources:
+        counts = pd.Series(list(sources.values())).value_counts()
+        protocol.info("Datenbeschaffung", "Herkunft der Kurse: " + ", ".join(f"{k}: {v}" for k, v in counts.items()))
+        stooq = sorted(t for t, src in sources.items() if "Stooq" in str(src))
+        if stooq:
+            protocol.warn("Datenbeschaffung", f"{len(stooq)} Ticker nur über Stooq verfügbar – Kurse NICHT "
+                                              f"dividendenbereinigt: {', '.join(stooq)}")
+
+
 def _load_returns(cfg: StudyConfig, provider, protocol: Protocol):
     start, end = cfg.data_period()
     indices = sorted({g.market_index for g in cfg.groups})
@@ -63,7 +74,11 @@ def _load_returns(cfg: StudyConfig, provider, protocol: Protocol):
     else:
         prices = provider.prices(all_tickers + indices, start, end)
         if prices.empty:
-            raise RuntimeError("Es konnten keine Kursdaten geladen werden. Netzwerk/Datenquelle prüfen.")
+            errs = getattr(provider, "errors", {})
+            hint = f" Beispiel-Fehler: {next(iter(errs.values()))}" if errs else ""
+            raise RuntimeError("Es konnten keine Kursdaten geladen werden. Netzwerk/Datenquelle prüfen oder "
+                               "ein Datenpaket mit scripts/fetch_data.py bzw. scripts/fetch_data.R erstellen." + hint)
+        _log_sources(provider, protocol)
         rets = data_mod.to_returns(prices, cfg.return_type)
         kind = "logarithmierte" if cfg.return_type == "log" else "diskrete"
         protocol.info("Renditen", f"Tägliche {kind} Renditen aus bereinigten Schlusskursen (Dividenden/Splits berücksichtigt)")

@@ -61,7 +61,7 @@ def _log_sources(provider, protocol: Protocol) -> None:
                                               f"dividendenbereinigt: {', '.join(stooq)}")
 
 
-def _load_returns(cfg: StudyConfig, provider, protocol: Protocol):
+def _load_returns(cfg: StudyConfig, provider, protocol: Protocol, progress=None):
     start, end = cfg.data_period()
     indices = sorted({g.market_index for g in cfg.groups})
     all_tickers = sorted({t for g in cfg.groups for t in g.tickers})
@@ -72,7 +72,11 @@ def _load_returns(cfg: StudyConfig, provider, protocol: Protocol):
         rets = provider.returns(all_tickers + indices, start, end)
         protocol.info("Renditen", "Renditen wurden direkt übernommen (keine Kursumrechnung)")
     else:
-        prices = provider.prices(all_tickers + indices, start, end)
+        if isinstance(provider, data_mod.YahooProvider) and progress:
+            prices = provider.prices(all_tickers + indices, start, end,
+                                     progress=lambda f, text: progress(0.02 + 0.03 * f, text))
+        else:
+            prices = provider.prices(all_tickers + indices, start, end)
         if prices.empty:
             errs = getattr(provider, "errors", {})
             hint = f" Beispiel-Fehler: {next(iter(errs.values()))}" if errs else ""
@@ -133,7 +137,7 @@ def run_study(cfg: StudyConfig, provider=None, factor_loader=None, progress_cb=N
     provider = provider or data_mod.YahooProvider()
     factor_loader = factor_loader or data_mod.load_ff3
     progress(0.02, "Lade Kursdaten …")
-    group_returns, market, sizes = _load_returns(cfg, provider, protocol)
+    group_returns, market, sizes = _load_returns(cfg, provider, protocol, progress)
     factors = _load_factors(cfg, protocol, factor_loader)
 
     protocol.info("Methodik", f"Hauptmodell: {RETURN_MODELS[cfg.model]}; Schätzfenster "

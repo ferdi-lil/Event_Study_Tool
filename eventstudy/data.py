@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import contextlib
 import io
+import json
 import logging
 import warnings
 import zipfile
@@ -40,7 +41,7 @@ def fetch_yahoo_chart(ticker: str, start, end, session=None) -> pd.Series:
         url = f"https://{host}.finance.yahoo.com/v8/finance/chart/{requests.utils.quote(ticker)}"
         try:
             r = sess.get(url, params={"period1": p1, "period2": p2, "interval": "1d", "events": "div,splits",
-                                      "includeAdjustedClose": "true"}, headers=BROWSER_HEADERS, timeout=30)
+                                      "includeAdjustedClose": "true"}, headers=BROWSER_HEADERS, timeout=15)
             r.raise_for_status()
             return parse_yahoo_chart(r.json())
         except Exception as exc:  # try the other host
@@ -86,7 +87,7 @@ def fetch_stooq(ticker: str, start, end, session=None) -> pd.Series:
     sess = session or requests.Session()
     r = sess.get("https://stooq.com/q/d/l/", params={"s": sym, "i": "d", "d1": pd.Timestamp(start).strftime("%Y%m%d"),
                                                       "d2": pd.Timestamp(end).strftime("%Y%m%d")},
-                 headers=BROWSER_HEADERS, timeout=30)
+                 headers=BROWSER_HEADERS, timeout=15)
     r.raise_for_status()
     if not r.text.startswith("Date"):
         raise ValueError(r.text.strip()[:80] or "keine Daten")
@@ -148,24 +149,47 @@ class YahooProvider:
             close.columns = tickers
         return {t: close[t] for t in tickers if t in close.columns and close[t].notna().any()}
 
+    def _failed_path(self, start, end) -> Path:
+        return self.cache_dir / f"_nicht_verfuegbar_{start}_{end}.json"
+
+    def _known_failures(self, start, end) -> dict[str, str]:
+        """Tickers that found no source within the last 24 h – skipped instead of retried."""
+        p = self._failed_path(start, end)
+        if not p.exists() or (pd.Timestamp.now() - pd.Timestamp(p.stat().st_mtime, unit="s")) > pd.Timedelta(hours=24):
+            return {}
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except ValueError:
+            return {}
+
     def prices(self, tickers: list[str], start, end, progress=None) -> pd.DataFrame:
+        """`progress(fraction, text)` is called while downloading."""
         import requests
 
+        def report(frac, text):
+            if progress:
+                progress(frac, text)
+
         frames, missing = {}, []
+        failed_before = self._known_failures(start, end)
         for t in tickers:
             p = self._cache_path(t, start, end)
             if p.exists():
                 c = pd.read_csv(p, index_col=0, parse_dates=True)
                 frames[t] = c.iloc[:, 0]
                 self.sources[t] = (c["source"].iloc[0] if "source" in c.columns and len(c) else "Cache") + " (Cache)"
+            elif t in failed_before:
+                self.errors[t] = f"bereits zuvor ohne Daten (wird 24 h nicht erneut versucht): {failed_before[t]}"
             else:
                 missing.append(t)
+        report(0.0, f"{len(frames)} Ticker aus dem Cache, {len(missing)} werden online geladen …")
         if missing:
             for t, s in self._yfinance(missing, start, end).items():
                 self._store(frames, t, s, start, end, "yfinance")
         sess = requests.Session()
         rest = [t for t in missing if t not in frames]
         for i, t in enumerate(rest):
+            report(i / max(len(rest), 1), f"Ersatzquellen für {t} ({i + 1}/{len(rest)}) …")
             try:
                 self._store(frames, t, fetch_yahoo_chart(t, start, end, sess), start, end, "Yahoo-Chart-API")
                 continue
@@ -176,8 +200,11 @@ class YahooProvider:
                     self._store(frames, t, fetch_stooq(t, start, end, sess), start, end, "Stooq (unbereinigt)")
                 except Exception as exc:
                     self.errors[t] += f" | Stooq: {exc}"
-            if progress:
-                progress((i + 1) / len(rest))
+        failed = {t: self.errors.get(t, "")[:200] for t in rest if t not in frames}
+        if failed:
+            self._failed_path(start, end).write_text(json.dumps({**failed_before, **failed}, ensure_ascii=False),
+                                                     encoding="utf-8")
+        report(1.0, "Kursdaten geladen")
         if not frames:
             return pd.DataFrame()
         df = pd.DataFrame(frames)

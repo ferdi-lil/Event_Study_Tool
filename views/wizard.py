@@ -200,6 +200,9 @@ elif step == 4:
 else:
     st.subheader("Datenquelle")
     sources = ["yahoo", "bundle", "upload"]
+    # A bundle fetched for exactly this study is the best default.
+    if cfg.data_source == "yahoo" and any(b.name == cfg.slug for b in list_bundles()):
+        cfg.data_source = "bundle"
     src = st.radio("Kurse", sources, index=sources.index(cfg.data_source) if cfg.data_source in sources else 0,
                    horizontal=True, format_func={"yahoo": "Online laden (Yahoo, mit Fallbacks)",
                                                  "bundle": "Datenpaket (data/…)",
@@ -214,7 +217,9 @@ else:
         if not bundles:
             st.warning("Noch kein Datenpaket vorhanden. Auf einem Rechner mit Internet erzeugen:")
         else:
-            bundle = st.selectbox("Datenpaket", bundles, format_func=lambda p: p.name)
+            names = [b.name for b in bundles]
+            bundle = st.selectbox("Datenpaket", bundles, format_func=lambda p: p.name,
+                                  index=names.index(cfg.slug) if cfg.slug in names else 0)
             man = bundle / "manifest.json"
             if man.exists():
                 st.json(json.loads(man.read_text(encoding="utf-8")), expanded=False)

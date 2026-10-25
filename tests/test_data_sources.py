@@ -65,6 +65,13 @@ def test_fallback_chain(tmp_path, monkeypatch):
     monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e: {})
     df2 = p2.prices(["B.DE", "C.DE"], "2024-01-01", "2024-01-10")
     assert df2.shape == (5, 2) and p2.sources["C.DE"].startswith("Stooq")
+    # a ticker that had no source is not retried for 24 h (keeps reruns fast)
+    calls = []
+    monkeypatch.setattr(data_mod, "fetch_yahoo_chart", lambda t, *a, **k: calls.append(t) or chart(t, *a))
+    steps = []
+    p3 = YahooProvider(cache_dir=tmp_path)
+    p3.prices(["D.DE"], "2024-01-01", "2024-01-10", progress=lambda f, text: steps.append(text))
+    assert calls == [] and "zuvor" in p3.errors["D.DE"] and steps
 
 
 def test_ff3_from_local_browser_download(tmp_path):

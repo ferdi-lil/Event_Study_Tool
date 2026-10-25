@@ -43,7 +43,7 @@ def main() -> int:
 
     provider = YahooProvider(use_stooq=not args.no_stooq)
     prices = provider.prices(tickers, start, end,
-                             progress=lambda f: print(f"\r  Fallback-Abruf {f:.0%}", end="", flush=True))
+                             progress=lambda f, text: print(f"\r  {text:<70}", end="", flush=True))
     print()
     if prices.empty:
         print("Keine Kurse erhalten. Beispiel-Fehler:", next(iter(provider.errors.values()), "–"))

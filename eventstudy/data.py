@@ -5,6 +5,8 @@ import contextlib
 import io
 import json
 import logging
+import shutil
+import time
 import warnings
 import zipfile
 from pathlib import Path
@@ -95,6 +97,17 @@ def fetch_stooq(ticker: str, start, end, session=None) -> pd.Series:
     return df["Close"].astype(float).dropna()
 
 
+class _Collect(logging.Handler):
+    """Keeps yfinance's error messages so they can be shown in the app instead of the console."""
+
+    def __init__(self) -> None:
+        super().__init__(level=logging.ERROR)
+        self.messages: list[str] = []
+
+    def emit(self, record) -> None:
+        self.messages.append(record.getMessage().strip())
+
+
 class YahooProvider:
     """Adjusted close prices, cached on disk per ticker, with a chain of fallbacks:
 
@@ -110,6 +123,7 @@ class YahooProvider:
         self.use_stooq = use_stooq
         self.sources: dict[str, str] = {}
         self.errors: dict[str, str] = {}
+        self.systemic_failure = False
 
     def _cache_path(self, ticker: str, start, end) -> Path:
         safe = ticker.replace("^", "IDX_").replace("/", "_")
@@ -124,30 +138,61 @@ class YahooProvider:
         frames[t] = s
         self.sources[t] = source
 
-    def _yfinance(self, tickers, start, end) -> dict[str, pd.Series]:
+    def _yfinance(self, tickers, start, end, report=None, batch: int = 40) -> dict[str, pd.Series]:
+        """Download in batches (large single requests trigger Yahoo's rate limit), one retry per batch."""
         try:
             import yfinance as yf
+        except ImportError as exc:
+            self.errors.update({t: f"yfinance nicht installiert: {exc}" for t in tickers})
+            return {}
+        # yfinance floods the console with pandas deprecation warnings and per-ticker error
+        # lines; we collect its error log instead and report missing tickers ourselves.
+        logger = logging.getLogger("yfinance")
+        logger.setLevel(logging.ERROR)
+        logger.propagate = False
+        collected = _Collect()
+        logger.addHandler(collected)
+        try:
+            return self._yfinance_batches(yf, tickers, start, end, report, batch, collected)
+        finally:
+            logger.removeHandler(collected)
 
-            # yfinance floods the console with pandas deprecation warnings and per-ticker error
-            # lines; missing tickers are reported by us (protocol / fetch script) instead.
-            logging.getLogger("yfinance").setLevel(logging.CRITICAL)
-            with warnings.catch_warnings(), contextlib.redirect_stdout(io.StringIO()), \
-                    contextlib.redirect_stderr(io.StringIO()):
-                warnings.simplefilter("ignore")
-                data = yf.download(tickers, start=str(start), end=str(end), progress=False,
-                                   auto_adjust=True, group_by="column", threads=True)
-        except Exception as exc:
-            for t in tickers:
-                self.errors[t] = f"yfinance: {exc}"
-            return {}
-        if data is None or data.empty:
-            return {}
-        close = data["Close"] if isinstance(data.columns, pd.MultiIndex) else data[["Close"]]
-        if not isinstance(close, pd.DataFrame):
-            close = close.to_frame()
-        if close.shape[1] == 1 and len(tickers) == 1:
-            close.columns = tickers
-        return {t: close[t] for t in tickers if t in close.columns and close[t].notna().any()}
+    def _yfinance_batches(self, yf, tickers, start, end, report, batch, collected) -> dict[str, pd.Series]:
+        out = {}
+        chunks = [tickers[i:i + batch] for i in range(0, len(tickers), batch)]
+        for k, chunk in enumerate(chunks):
+            if report:
+                report(k / len(chunks), f"yfinance: Ticker {k * batch + 1}–{k * batch + len(chunk)} von {len(tickers)} …")
+            for attempt in range(2):
+                collected.messages.clear()
+                captured = io.StringIO()
+                try:
+                    with warnings.catch_warnings(), contextlib.redirect_stdout(captured), \
+                            contextlib.redirect_stderr(captured):
+                        warnings.simplefilter("ignore")
+                        data = yf.download(chunk, start=str(start), end=str(end), progress=False,
+                                           auto_adjust=True, group_by="column", threads=True)
+                except Exception as exc:  # rate limit, network
+                    self.errors.update({t: f"yfinance: {exc}" for t in chunk})
+                    data = None
+                if data is not None and not data.empty:
+                    break
+                # yfinance prints its reason instead of raising – keep the gist for the user
+                lines = collected.messages + [ln.strip() for ln in captured.getvalue().splitlines()
+                                              if ln.strip() and "Warning" not in ln and "inplace" not in ln
+                                              and "pandas" not in ln]
+                if lines:
+                    self.errors.update({t: f"yfinance: {lines[-1][:200]}" for t in chunk})
+                time.sleep(2)
+            if data is None or data.empty:
+                continue
+            close = data["Close"] if isinstance(data.columns, pd.MultiIndex) else data[["Close"]]
+            if not isinstance(close, pd.DataFrame):
+                close = close.to_frame()
+            if close.shape[1] == 1 and len(chunk) == 1:
+                close.columns = chunk
+            out.update({t: close[t] for t in chunk if t in close.columns and close[t].notna().any()})
+        return out
 
     def _failed_path(self, start, end) -> Path:
         return self.cache_dir / f"_nicht_verfuegbar_{start}_{end}.json"
@@ -184,12 +229,13 @@ class YahooProvider:
                 missing.append(t)
         report(0.0, f"{len(frames)} Ticker aus dem Cache, {len(missing)} werden online geladen …")
         if missing:
-            for t, s in self._yfinance(missing, start, end).items():
+            got = self._yfinance(missing, start, end, report=lambda f, text: report(0.6 * f, text))
+            for t, s in got.items():
                 self._store(frames, t, s, start, end, "yfinance")
         sess = requests.Session()
         rest = [t for t in missing if t not in frames]
         for i, t in enumerate(rest):
-            report(i / max(len(rest), 1), f"Ersatzquellen für {t} ({i + 1}/{len(rest)}) …")
+            report(0.6 + 0.4 * i / max(len(rest), 1), f"Ersatzquellen für {t} ({i + 1}/{len(rest)}) …")
             try:
                 self._store(frames, t, fetch_yahoo_chart(t, start, end, sess), start, end, "Yahoo-Chart-API")
                 continue
@@ -201,7 +247,11 @@ class YahooProvider:
                 except Exception as exc:
                     self.errors[t] += f" | Stooq: {exc}"
         failed = {t: self.errors.get(t, "")[:200] for t in rest if t not in frames}
-        if failed:
+        fetched_online = len([t for t in missing if t in frames])
+        # Remember failures only if the sources basically worked; if nothing came through at all
+        # (network down, rate limit), blacklisting every ticker would block the next attempt.
+        self.systemic_failure = bool(missing) and fetched_online == 0 and len(missing) > 3
+        if failed and not self.systemic_failure:
             self._failed_path(start, end).write_text(json.dumps({**failed_before, **failed}, ensure_ascii=False),
                                                      encoding="utf-8")
         report(1.0, "Kursdaten geladen")
@@ -210,6 +260,17 @@ class YahooProvider:
         df = pd.DataFrame(frames)
         df.index = pd.to_datetime(df.index).tz_localize(None).normalize()
         return df.sort_index()
+
+
+def clear_price_cache(only_failures: bool = False, cache_dir: Path = CACHE_DIR) -> int:
+    """Delete cached prices (or just the 24-h 'not available' lists). Returns number of files removed."""
+    d = cache_dir / "prices"
+    if not d.exists():
+        return 0
+    files = list(d.glob("_nicht_verfuegbar_*.json")) if only_failures else list(d.iterdir())
+    for f in files:
+        f.unlink() if f.is_file() else shutil.rmtree(f)
+    return len(files)
 
 
 class FrameProvider:

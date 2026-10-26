@@ -41,7 +41,7 @@ def test_stooq_symbols():
 
 def test_fallback_chain(tmp_path, monkeypatch):
     idx = pd.bdate_range("2024-01-01", periods=5)
-    monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e: {"A.DE": pd.Series(1.0, idx)})
+    monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e, **k: {"A.DE": pd.Series(1.0, idx)})
 
     def chart(t, s, e, sess=None):
         if t == "B.DE":
@@ -62,7 +62,7 @@ def test_fallback_chain(tmp_path, monkeypatch):
     assert "D.DE" in p.errors
     # second call is served from cache and keeps the original source
     p2 = YahooProvider(cache_dir=tmp_path)
-    monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e: {})
+    monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e, **k: {})
     df2 = p2.prices(["B.DE", "C.DE"], "2024-01-01", "2024-01-10")
     assert df2.shape == (5, 2) and p2.sources["C.DE"].startswith("Stooq")
     # a ticker that had no source is not retried for 24 h (keeps reruns fast)
@@ -72,6 +72,21 @@ def test_fallback_chain(tmp_path, monkeypatch):
     p3 = YahooProvider(cache_dir=tmp_path)
     p3.prices(["D.DE"], "2024-01-01", "2024-01-10", progress=lambda f, text: steps.append(text))
     assert calls == [] and "zuvor" in p3.errors["D.DE"] and steps
+
+
+def test_total_outage_does_not_blacklist(tmp_path, monkeypatch):
+    """If no source delivers anything (network down, rate limit), the next attempt must retry."""
+    def down(*a, **k):
+        raise RuntimeError("offline")
+
+    monkeypatch.setattr(YahooProvider, "_yfinance", lambda self, t, s, e, **k: {})
+    monkeypatch.setattr(data_mod, "fetch_yahoo_chart", down)
+    monkeypatch.setattr(data_mod, "fetch_stooq", down)
+    p = YahooProvider(cache_dir=tmp_path)
+    assert p.prices(["A.DE", "B.DE", "C.DE", "D.DE"], "2024-01-01", "2024-01-10").empty
+    assert p.systemic_failure
+    assert not list((tmp_path / "prices").glob("_nicht_verfuegbar_*"))
+    assert data_mod.clear_price_cache(cache_dir=tmp_path) == 0
 
 
 def test_ff3_from_local_browser_download(tmp_path):

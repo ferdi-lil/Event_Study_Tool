@@ -80,8 +80,8 @@ def _load_returns(cfg: StudyConfig, provider, protocol: Protocol, progress=None)
         if prices.empty:
             errs = getattr(provider, "errors", {})
             hint = f" Beispiel-Fehler: {next(iter(errs.values()))}" if errs else ""
-            raise RuntimeError("Es konnten keine Kursdaten geladen werden. Netzwerk/Datenquelle prüfen oder "
-                               "ein Datenpaket mit scripts/fetch_data.py bzw. scripts/fetch_data.R erstellen." + hint)
+            raise RuntimeError("Es konnten keine Kursdaten geladen werden. Unter „System“ → „Check starten“ "
+                               "lässt sich prüfen, welche Datenquelle nicht erreichbar ist." + hint)
         _log_sources(provider, protocol)
         rets = data_mod.to_returns(prices, cfg.return_type)
         kind = "logarithmierte" if cfg.return_type == "log" else "diskrete"

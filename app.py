@@ -25,5 +25,6 @@ pages = [
     st.Page("views/wizard.py", title="Studie einrichten"),
     st.Page("views/results.py", title="Ergebnisse"),
     st.Page("views/methodik.py", title="Methodik"),
+    st.Page("views/system.py", title="System"),
 ]
 st.navigation(pages).run()

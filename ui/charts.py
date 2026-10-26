@@ -17,10 +17,11 @@ def group_colors(group_names: list[str]) -> dict[str, str]:
 
 def _layout(fig: go.Figure, title: str, y_title: str, x_title: str = "") -> go.Figure:
     fig.update_layout(
-        title=dict(text=title, font=dict(size=15)), height=420, margin=dict(l=10, r=10, t=50, b=10),
+        title=dict(text=title, font=dict(size=13, color="#1c1c1a"), x=0, xanchor="left"), height=420,
+        margin=dict(l=10, r=10, t=56, b=10),
         legend=dict(orientation="h", yanchor="bottom", y=1.0, xanchor="left", x=0, title=None),
-        hovermode="x unified", font=dict(color=TEXT),
-        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
+        hovermode="x unified", font=dict(color=TEXT, family="IBM Plex Sans, sans-serif", size=12),
+        plot_bgcolor="#ffffff", paper_bgcolor="#ffffff",
     )
     fig.update_yaxes(title=y_title, ticksuffix=" %", zeroline=True, zerolinecolor=MUTED, zerolinewidth=1,
                      gridcolor="rgba(128,128,128,0.15)")

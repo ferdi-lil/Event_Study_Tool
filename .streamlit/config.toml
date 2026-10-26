@@ -1,9 +1,33 @@
 [theme]
 base = "light"
-primaryColor = "#2a78d6"
+primaryColor = "#1f3a5f"
+backgroundColor = "#f4f4f1"
+secondaryBackgroundColor = "#eaeae5"
+textColor = "#1c1c1a"
+linkColor = "#1f3a5f"
+codeTextColor = "#1f3a5f"
+codeBackgroundColor = "#ebebe6"
+font = "IBM Plex Sans:https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap, sans-serif"
+headingFont = "IBM Plex Sans:https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap, sans-serif"
+codeFont = "IBM Plex Mono:https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap, monospace"
+baseFontSize = 14
+baseRadius = "2px"
+buttonRadius = "2px"
+borderColor = "#c9c9c3"
+dataframeBorderColor = "#d6d6d0"
+dataframeHeaderBackgroundColor = "#e9e9e3"
+showWidgetBorder = true
+metricValueFontSize = "22px"
+
+[theme.sidebar]
+backgroundColor = "#e9e9e3"
+secondaryBackgroundColor = "#dededa"
 
 [server]
 headless = true
+
+[client]
+toolbarMode = "minimal"
 
 [browser]
 gatherUsageStats = false

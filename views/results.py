@@ -7,16 +7,17 @@ from eventstudy.config import RETURN_MODELS, StudyConfig
 from eventstudy.engine import ALL, MAIN
 from eventstudy.report import model_comparison, results_table, to_excel, to_markdown
 from eventstudy.significance import P_COLUMNS, stars
-from ui import charts
+from ui import charts, style
 from ui.state import start_new
 
 studies = [s for s in storage.list_studies() if s["status"] == "Ausgewertet"]
 if not studies:
+    style.titlebar("Ergebnisse")
     st.info("Noch keine ausgewerteten Studien.")
     st.stop()
 slugs = [s["slug"] for s in studies]
 current = st.session_state.get("open_slug")
-slug = st.selectbox("Studie", slugs, index=slugs.index(current) if current in slugs else 0,
+slug = st.sidebar.selectbox("Studie", slugs, index=slugs.index(current) if current in slugs else 0,
                     format_func=lambda x: next(s["config"].name for s in studies if s["slug"] == x))
 st.session_state["open_slug"] = slug
 res = storage.load_result(slug)
@@ -24,16 +25,15 @@ cfg: StudyConfig = res.config
 colors = charts.group_colors([g.name for g in cfg.groups])
 roles = {g.name: g.role for g in cfg.groups}
 
-st.title(cfg.name)
+style.titlebar(cfg.name, f"Berechnet {pd.Timestamp(res.finished):%d.%m.%Y %H:%M} · {res.data_source} · "
+                         f"{RETURN_MODELS[cfg.model]}")
 if cfg.description:
-    st.caption(cfg.description)
-st.caption(f"Berechnet {res.finished.replace('T', ' ')} · {res.data_source} · {res.runtime_s:.0f} s · "
-           f"Modell: {RETURN_MODELS[cfg.model]}")
-a, b, _ = st.columns([1, 1, 4])
-if a.button("✏️ Bearbeiten"):
+    st.markdown(f'<div class="es-note">{cfg.description}</div>', unsafe_allow_html=True)
+a, b, _ = st.columns([1, 1.4, 4])
+if a.button("Bearbeiten", use_container_width=True):
     start_new(StudyConfig.from_dict(cfg.to_dict()), slug)
     st.switch_page("views/wizard.py")
-if b.button("🔁 Als Kopie neu aufsetzen"):
+if b.button("Als Variante kopieren", use_container_width=True):
     copy = StudyConfig.from_dict(cfg.to_dict())
     copy.name += " (Variante)"
     start_new(copy)
@@ -51,28 +51,31 @@ main = res.main_table()
 main = main[main["Event"] == event]
 
 # ------------------------------------------------------------- key findings
-st.subheader("Auf einen Blick")
 head_w = StudyConfig.window_label(cfg.windows[0])
-tiles = main[main["Window"] == head_w]
-cols = st.columns(max(1, min(len(tiles), 5)))
-for i, (_, r) in enumerate(tiles.head(5).iterrows()):
+style.section(f"Kennzahlen · CAAR im Fenster {head_w}", f"Signifikanz nach {P_COLUMNS.get(star_col)}; "
+              "Untersuchungsgruppen zuerst.")
+tiles = main[main["Window"] == head_w].sort_values("Role", key=lambda r: r != "treatment")
+items = []
+for _, r in tiles.head(6).iterrows():
     p = r.get(star_col, np.nan)
-    sig = "signifikant" if pd.notna(p) and p < 0.05 else "nicht signifikant"
-    cols[i].metric(f"{'🎯' if r['Role'] == 'treatment' else '⚖️'} {r['Group']} {head_w}",
-                   f"{r['CAAR'] * 100:+.2f} %{stars(p)}", help=f"N={int(r['N'])}, p ({P_COLUMNS.get(star_col)}) = {p:.4f}",
-                   delta=f"{sig} (p={p:.3f})", delta_color="off", delta_arrow="off")
+    sig = p < 0.05 if pd.notna(p) else False
+    items.append((f"{r['Group']} ({'U' if r['Role'] == 'treatment' else 'K'})", f"{r['CAAR'] * 100:+.2f} %{stars(p)}",
+                  f"N = {int(r['N'])} · p = {p:.3f}", (1 if r["CAAR"] > 0 else -1) if sig else 0))
+style.kpis(items)
+st.markdown('<div class="es-note">U = Untersuchungsgruppe, K = Kontrollgruppe. Farbig nur bei p &lt; 0,05.</div>',
+            unsafe_allow_html=True)
 
 kp_gap = pd.DataFrame()
 if {"p_t", "p_kolari"} <= set(main.columns):
     kp_gap = main[(main["Role"] == "treatment") & (main["p_t"] < 0.05) & (main["p_kolari"] >= 0.05)]
 if not kp_gap.empty:
-    st.warning(f"⚠️ In {len(kp_gap)} Fenster(n) ist der t-Test signifikant, der Kolari-Pynnönen-Test (korrigiert für "
+    st.warning(f"**Warnung:** In {len(kp_gap)} Fenster(n) ist der t-Test signifikant, der Kolari-Pynnönen-Test (korrigiert für "
                "Korrelation zwischen Unternehmen am selben Event-Tag) aber nicht: "
                + ", ".join(f"{r.Group} {r.Window}" for r in kp_gap.itertuples())
                + ". Diese Ergebnisse vorsichtig interpretieren.")
 
-tabs = st.tabs(["📊 Überblick", "📈 CAAR-Verlauf", "⚖️ Gruppenvergleich", "🏢 Unternehmen", "🧪 Robustheit",
-                "🎲 Placebo", "📝 Protokoll", "⬇️ Export & KI"])
+tabs = st.tabs(["Überblick", "CAAR-Verlauf", "Gruppenvergleich", "Unternehmen", "Robustheit", "Placebo",
+                "Protokoll", "Export"])
 
 with tabs[0]:
     st.plotly_chart(charts.caar_bars(main, colors, f"CAAR je Eventfenster – {labels[event]}"), use_container_width=True)
@@ -81,7 +84,7 @@ with tabs[0]:
     sub = results_table(res, event=event, subgroups=True, star_col=star_col)
     sub = sub[sub["Gruppe"].str.contains("·")]
     if not sub.empty:
-        st.markdown("**Untergruppen**")
+        style.section("Untergruppen")
         st.dataframe(sub.drop(columns=["Event"]), use_container_width=True, hide_index=True)
     st.caption("CAAR = durchschnittliche kumulierte abnormale Rendite. Sterne: * p<0,05 · ** p<0,01 · *** p<0,001.")
 
@@ -126,7 +129,7 @@ with tabs[4]:
                     & (res.summary["Model"] == cfg.model) & (res.summary["Variant"] == MAIN)]
     pcols = [c for c in p_avail if c in s.columns]
     if pcols:
-        st.markdown("**Alle p-Werte der Hauptspezifikation**")
+        style.section("Alle p-Werte der Hauptspezifikation")
         pv = s[["Group", "Window"] + pcols].rename(columns=P_COLUMNS)
         st.dataframe(pv.style.format(precision=4).map(
             lambda v: "font-weight: 700" if isinstance(v, float) and v < 0.05 else "", subset=[P_COLUMNS[c] for c in pcols]),
@@ -183,7 +186,7 @@ with tabs[7]:
     c3.download_button("Konfiguration (JSON)", json.dumps(cfg.to_dict(), indent=2, ensure_ascii=False),
                        f"{cfg.slug}.json", use_container_width=True)
     st.divider()
-    st.markdown("**✨ Ergebnisinterpretation (Entwurf)**")
+    style.section("Ergebnisinterpretation (KI-Entwurf)")
     if not ai.available():
         st.info("Für einen KI-Entwurf `ANTHROPIC_API_KEY` in `.env` setzen.")
     elif st.button("Interpretation entwerfen"):

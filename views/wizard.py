@@ -10,29 +10,29 @@ from eventstudy.config import RETURN_MODELS, TESTS, Event, StudyConfig
 from eventstudy.data import BundleProvider, FrameProvider, YahooProvider, list_bundles, read_wide_csv
 from eventstudy.engine import run_study
 from ui.group_editor import group_editor, group_list
+from ui import style
 from ui.state import draft, open_results
 
-STEPS = ["1 · Events", "2 · Untersuchungsgruppe", "3 · Kontrollgruppen", "4 · Fenster & Modell",
-         "5 · Robustheit & Tests", "6 · Daten & Start"]
+STEPS = ["Events", "Untersuchung", "Kontrolle", "Fenster & Modell", "Robustheit", "Daten & Start"]
 
 cfg = draft()
 step = st.session_state.get("wizard_step", 0)
 
-st.title(cfg.name if cfg.name != "Neue Event Study" else "Neue Event Study")
-nav = st.radio("Schritt", STEPS, index=step, horizontal=True, label_visibility="collapsed")
-if STEPS.index(nav) != step:
-    st.session_state["wizard_step"] = step = STEPS.index(nav)
-    st.rerun()
-st.progress((step + 1) / len(STEPS))
+style.titlebar(cfg.name, f"Schritt {step + 1} von {len(STEPS)} · {STEPS[step]}")
+for i, (col, label) in enumerate(zip(st.columns(len(STEPS), gap="small"), STEPS)):
+    if col.button(f"{i + 1}  {label}", key=f"stepbtn_{i}", use_container_width=True,
+                  type="primary" if i == step else "secondary"):
+        st.session_state["wizard_step"] = i
+        st.rerun()
 
 
 def nav_buttons():
     st.divider()
     a, _, b = st.columns([1, 4, 1])
-    if step > 0 and a.button("← Zurück", use_container_width=True):
+    if step > 0 and a.button("Zurück", use_container_width=True):
         st.session_state["wizard_step"] = step - 1
         st.rerun()
-    if step < len(STEPS) - 1 and b.button("Weiter →", type="primary", use_container_width=True):
+    if step < len(STEPS) - 1 and b.button("Weiter", type="primary", use_container_width=True):
         st.session_state["wizard_step"] = step + 1
         st.rerun()
 
@@ -42,8 +42,8 @@ if step == 0:
     cfg.name = st.text_input("Name der Studie", cfg.name)
     cfg.description = st.text_area("Forschungsfrage / Beschreibung", cfg.description, height=90,
                                    placeholder="Wie reagieren europäische Tech-Aktien auf die Verabschiedung des EU AI Act?")
-    st.subheader("Event-Daten")
-    with st.expander("🧭 Leitfaden: Welche Daten eignen sich als Event?"):
+    style.section("Event-Daten")
+    with st.expander("Leitfaden: Welche Daten eignen sich als Event?"):
         st.markdown("""
 - **Überraschung zählt:** Märkte reagieren auf *neue* Information. Ein Verfahrensschritt, der seit Wochen erwartet wird, hat kaum Informationsgehalt (Binder 1985).
 - **Wenige, klare Ereignisse:** Lieber 1–3 Schlüsselereignisse als jeden Zwischenschritt. Zu viele Events verwässern die Effekte und erzeugen überlappende Fenster.
@@ -62,7 +62,7 @@ if step == 0:
     cfg.events = [Event(pd.Timestamp(r["Datum"]).strftime("%Y-%m-%d"), r["Bezeichnung"] or "")
                   for _, r in edited.iterrows() if pd.notna(r["Datum"])]
 
-    with st.expander("✨ Events mit KI finden"):
+    with st.expander("KI-Assistent: Ereignisse vorschlagen"):
         if not ai.available():
             st.info("Für KI-Vorschläge `ANTHROPIC_API_KEY` in `.env` setzen.")
         else:
@@ -77,10 +77,10 @@ if step == 0:
             if sug:
                 st.markdown(sug["recommendation"])
                 for c in sug.get("caveats", []):
-                    st.caption(f"⚠️ {c}")
+                    st.caption(f"Hinweis: {c}")
                 for i, e in enumerate(sug["events"]):
                     c1, c2 = st.columns([5, 1])
-                    flag = "" if e["confidence"] == "sicher" else " · ⚠️ Datum unsicher – bitte prüfen"
+                    flag = "" if e["confidence"] == "sicher" else " · Datum unsicher, bitte prüfen"
                     c1.markdown(f"**{e['date']} – {e['label']}** (Überraschung: {e['surprise']}{flag})  \n{e['why_relevant']}")
                     if c2.button("Hinzufügen", key=f"add_ev_{i}") and e["date"] not in [x.date for x in cfg.events]:
                         cfg.events.append(Event(e["date"], e["label"]))
@@ -90,19 +90,19 @@ if step == 0:
 
 # ------------------------------------------------------------------- step 2
 elif step == 1:
-    st.subheader("Untersuchungsgruppe(n)")
+    style.section("Untersuchungsgruppe(n)")
     st.caption("Die Unternehmen, deren Reaktion auf das Ereignis du messen willst. Du kannst mehrere anlegen, "
                "z. B. eine enge Hauptgruppe und eine erweiterte Gruppe mit Untergruppen.")
     group_list(cfg, "treatment")
-    with st.expander("➕ Untersuchungsgruppe hinzufügen", expanded=not cfg.treatment_groups()):
+    with st.expander("Untersuchungsgruppe hinzufügen", expanded=not cfg.treatment_groups()):
         group_editor(cfg, "treatment", "ge_treat")
 
 # ------------------------------------------------------------------- step 3
 elif step == 2:
-    st.subheader("Kontrollgruppen")
+    style.section("Kontrollgruppen")
     group_list(cfg, "control")
     if ai.available() and cfg.treatment_groups():
-        with st.expander("✨ KI: Welche Kontrollgruppen ergeben Sinn?"):
+        with st.expander("KI-Assistent: Welche Kontrollgruppen ergeben Sinn?"):
             if st.button("Vorschläge holen"):
                 summary = (f"{cfg.name}. {cfg.description} Events: " + "; ".join(f"{e.date} {e.label}" for e in cfg.events)
                            + ". Untersuchungsgruppen: " + "; ".join(f"{g.name}: {g.selection_note}" for g in cfg.treatment_groups()))
@@ -114,12 +114,12 @@ elif step == 2:
             for c in st.session_state.get("ai_controls", {}).get("control_groups", []):
                 st.markdown(f"**{c['name']}** – {c['logic']}  \n_Schließt aus:_ {c['what_it_rules_out']}")
             st.caption("Lege die vorgeschlagenen Gruppen anschließend unten über „Angeleitet“ oder „KI-Assistent“ an.")
-    with st.expander("➕ Kontrollgruppe hinzufügen", expanded=not cfg.control_groups()):
+    with st.expander("Kontrollgruppe hinzufügen", expanded=not cfg.control_groups()):
         group_editor(cfg, "control", "ge_ctrl")
 
 # ------------------------------------------------------------------- step 4
 elif step == 3:
-    st.subheader("Eventfenster")
+    style.section("Eventfenster")
     st.caption("Mehrere Fenster zeigen die zeitliche Struktur: Vorabreaktion (negativer Start), sofortige Reaktion, "
                "verzögerte Verarbeitung. Kurze Fenster sind weniger anfällig für Störereignisse.")
     presets = [(-1, 1), (0, 0), (0, 1), (0, 2), (0, 3), (0, 5), (-2, 2), (-5, 5), (-10, 10), (0, 10), (0, 20), (-20, 20)]
@@ -133,7 +133,7 @@ elif step == 3:
         labels[StudyConfig.window_label((int(a), int(b)))] = (int(a), int(b))
     cfg.windows = sorted({labels[c] for c in chosen}, key=lambda w: (w[1] - w[0], w[0]))
 
-    st.subheader("Schätzfenster & Modell")
+    style.section("Schätzfenster & Modell")
     e0, e1 = st.slider("Schätzfenster (Handelstage relativ zu t=0)", -500, -1, cfg.estimation_window,
                        help="Standard nach MacKinlay: ca. 250 Tage, mit Abstand zum Event, damit das Ereignis die Schätzung nicht beeinflusst.")
     cfg.estimation_window = (e0, e1)
@@ -152,7 +152,7 @@ elif step == 3:
 
 # ------------------------------------------------------------------- step 5
 elif step == 4:
-    st.subheader("Robustheit")
+    style.section("Robustheit")
     rob = [m for m in RETURN_MODELS if m != cfg.model]
     cfg.robustness_models = st.multiselect("Alternative Renditemodelle", rob, default=[m for m in cfg.robustness_models if m in rob],
                                            format_func=RETURN_MODELS.get,
@@ -176,7 +176,7 @@ elif step == 4:
     cfg.placebo.groups = st.multiselect("Placebo für Gruppen (leer = alle Untersuchungsgruppen)", names,
                                         default=[g for g in cfg.placebo.groups if g in names], disabled=not cfg.placebo.enabled)
 
-    st.subheader("Signifikanztests")
+    style.section("Signifikanztests")
     cfg.tests = st.multiselect("Tests", list(TESTS), default=cfg.tests, format_func=TESTS.get)
     with st.expander("Welche Tests brauche ich?"):
         st.markdown("""
@@ -186,7 +186,7 @@ elif step == 4:
 - **Rangtest** – nicht-parametrisch über die Zeit, robust gegen schiefe Renditeverteilungen.
 - **Patell, Vorzeichentest** – klassische Ergänzungen.
 """)
-    st.subheader("Datenbereinigung")
+    style.section("Datenbereinigung")
     c1, c2, c3 = st.columns(3)
     cfg.min_coverage = c1.slider("Mindest-Datenabdeckung", 0.5, 1.0, cfg.min_coverage, 0.05)
     cfg.min_estimation_obs = c2.number_input("Mindestbeobachtungen im Schätzfenster", 10, 500, cfg.min_estimation_obs)
@@ -198,7 +198,7 @@ elif step == 4:
 
 # ------------------------------------------------------------------- step 6
 else:
-    st.subheader("Datenquelle")
+    style.section("Datenquelle")
     sources = ["yahoo", "bundle", "upload"]
     # A bundle fetched for exactly this study is the best default.
     if cfg.data_source == "yahoo" and any(b.name == cfg.slug for b in list_bundles()):
@@ -233,15 +233,15 @@ else:
         upload = st.file_uploader("CSV: erste Spalte Datum, danach eine Spalte je Ticker (inkl. Marktindex)", type=["csv"])
         st.caption("Indizes müssen als Spalte mit ihrem Ticker vorliegen (z. B. `^STOXX`).")
 
-    st.subheader("Methodik-Check")
+    style.section("Methodik-Check")
     checks = check_config(cfg)
-    icons = {"error": "⛔", "warning": "⚠️", "hint": "💡"}
+    labels = {"error": "Fehler", "warning": "Warnung", "hint": "Hinweis"}
     if not checks:
         st.success("Keine Auffälligkeiten.")
     for lvl, msg in checks:
-        (st.error if lvl == "error" else st.warning if lvl == "warning" else st.info)(f"{icons[lvl]} {msg}")
+        (st.error if lvl == "error" else st.warning if lvl == "warning" else st.info)(f"**{labels[lvl]}:** {msg}")
 
-    st.subheader("Zusammenfassung")
+    style.section("Zusammenfassung")
     st.markdown(
         f"- **Events:** {', '.join(f'{e.date} ({e.label})' for e in cfg.events) or '–'}\n"
         f"- **Gruppen:** {', '.join(f'{g.name} [{len(g.tickers)}]' for g in cfg.groups) or '–'}\n"
@@ -252,10 +252,10 @@ else:
 
     errors = [m for lvl, m in checks if lvl == "error"]
     a, b = st.columns(2)
-    if a.button("💾 Als Entwurf speichern", use_container_width=True):
+    if a.button("Als Entwurf speichern", use_container_width=True):
         st.session_state["draft_slug"] = storage.save_config(cfg, st.session_state.get("draft_slug"))
         st.success("Gespeichert.")
-    if b.button("🚀 Event Study durchführen", type="primary", use_container_width=True,
+    if b.button("Studie berechnen", type="primary", use_container_width=True,
                 disabled=bool(errors) or (src == "upload" and upload is None) or (src == "bundle" and bundle is None)):
         slug = storage.save_config(cfg, st.session_state.get("draft_slug"))
         st.session_state["draft_slug"] = slug

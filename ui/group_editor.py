@@ -6,6 +6,7 @@ import streamlit as st
 
 from eventstudy import ai
 from eventstudy.config import FF3_REGIONS, MARKET_INDICES, Group, StudyConfig
+from ui import style
 from eventstudy.universe import (categorical_columns, filter_universe, list_builtin, load_universe,
                                  parse_ticker_text, suggest_index)
 
@@ -148,7 +149,7 @@ def _ai(key: str, role: str, context: str) -> None:
     st.markdown(f"**Auswahlkriterium:** {res['selection_criteria']}")
     st.markdown(res["rationale"])
     for c in res.get("caveats", []):
-        st.caption(f"⚠️ {c}")
+        st.caption(f"Hinweis: {c}")
     frames = []
     if uni is not None and res.get("filters"):
         flt = {f["column"]: f["values"] for f in res["filters"] if f["column"] in uni.columns}
@@ -167,7 +168,7 @@ def _ai(key: str, role: str, context: str) -> None:
 
 def group_editor(cfg: StudyConfig, role: str, key: str) -> None:
     """Renders the builder; on confirm appends a Group to cfg.groups."""
-    tabs = st.tabs(["✍️ Manuell", "🧭 Angeleitet", "✨ KI-Assistent"])
+    tabs = st.tabs(["Manuell", "Angeleitet (Universum)", "KI-Assistent"])
     context = "; ".join(f"{e.date} {e.label}" for e in cfg.events)
     if role == "control" and cfg.treatment_groups():
         context += " | Untersuchungsgruppe(n): " + "; ".join(
@@ -183,7 +184,7 @@ def group_editor(cfg: StudyConfig, role: str, key: str) -> None:
     if cand is None or cand.empty:
         return
     st.divider()
-    st.markdown("#### Auswahl prüfen und Gruppe anlegen")
+    style.section("Auswahl prüfen und Gruppe anlegen")
     edited = st.data_editor(cand, key=f"{key}_editor", use_container_width=True, hide_index=True, height=260,
                             column_config={"Aufnehmen": st.column_config.CheckboxColumn(width="small"),
                                            "subgroup": st.column_config.TextColumn("Untergruppe")})
@@ -203,7 +204,7 @@ def group_editor(cfg: StudyConfig, role: str, key: str) -> None:
                        index=1 if market_index in ("^GSPC", "^IXIC") else 0)
     note = st.text_area("Auswahlkriterium (für das Protokoll)", value=st.session_state.get(f"{key}_note", ""),
                         key=f"{key}_note_edit", height=70)
-    if st.button(f"✓ Gruppe „{name}“ mit {len(chosen)} Unternehmen anlegen", type="primary", key=f"{key}_add",
+    if st.button(f"Gruppe „{name}“ mit {len(chosen)} Unternehmen anlegen", type="primary", key=f"{key}_add",
                  disabled=chosen.empty or any(g.name == name for g in cfg.groups)):
         subs = {r.ticker: str(r.subgroup) for r in chosen.itertuples() if str(r.subgroup) not in ("", "nan", "None")}
         cfg.groups.append(Group(

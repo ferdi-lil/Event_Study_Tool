@@ -1,6 +1,8 @@
 import streamlit as st
 
-st.title("Methodik")
+from ui import style
+
+style.titlebar("Methodik", "MacKinlay (1997) · Tests · Robustheit · Datenbereinigung")
 st.markdown(r"""
 Das Tool folgt dem Event-Study-Design nach **MacKinlay (1997)**.
 

@@ -46,6 +46,6 @@ class Protocol:
             if e.step != current:
                 lines.append(f"\n### {e.step}\n")
                 current = e.step
-            prefix = {"warning": "⚠️ ", "exclusion": "✗ "}.get(e.level, "- ")
+            prefix = {"warning": "- **Warnung:** ", "exclusion": "- **Ausschluss:** "}.get(e.level, "- ")
             lines.append(f"{prefix}{e.message}")
         return "\n".join(lines).strip()

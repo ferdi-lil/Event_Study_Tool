@@ -14,12 +14,15 @@ try:
 except ImportError:
     pass
 
-st.set_page_config(page_title="Event-Study-Tool", page_icon="📈", layout="wide")
+from ui import style  # noqa: E402
+
+st.set_page_config(page_title="Event Study Workbench", layout="wide")
+style.apply()
 
 pages = [
-    st.Page("views/dashboard.py", title="Dashboard", icon=":material/dashboard:", default=True),
-    st.Page("views/wizard.py", title="Neue Event Study", icon=":material/add_chart:"),
-    st.Page("views/results.py", title="Ergebnisse", icon=":material/insights:"),
-    st.Page("views/methodik.py", title="Methodik", icon=":material/menu_book:"),
+    st.Page("views/dashboard.py", title="Studien", default=True),
+    st.Page("views/wizard.py", title="Studie einrichten"),
+    st.Page("views/results.py", title="Ergebnisse"),
+    st.Page("views/methodik.py", title="Methodik"),
 ]
 st.navigation(pages).run()

@@ -21,6 +21,7 @@ style.apply()
 
 pages = [
     st.Page("views/dashboard.py", title="Studien", default=True),
+    st.Page("views/finder.py", title="Finder"),
     st.Page("views/wizard.py", title="Studie einrichten"),
     st.Page("views/results.py", title="Ergebnisse"),
     st.Page("views/methodik.py", title="Methodik"),

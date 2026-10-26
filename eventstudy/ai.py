@@ -151,3 +151,38 @@ def interpret_results(study_summary: str, results_text: str) -> str:
         "Placebo), Grenzen. Keine Kausalbehauptungen über die Daten hinaus."
     )
     return _ask_json(prompt, schema, effort="medium")["interpretation_markdown"]
+
+
+def suggest_ideas(theme: str, direction: str, start: str, end: str, event_types: list[str], purpose: str,
+                  sectors: list[str], industries: list[str], regions: list[str]) -> dict:
+    """Study ideas for the Finder. Sector/industry/region values must come from the given lists."""
+    group = _obj({
+        "name": _STR, "role": {"type": "string", "enum": ["treatment", "control"]},
+        "regions": _STRS, "sectors": _STRS, "industries": _STRS, "exclude_sectors": _STRS, "rationale": _STR,
+    })
+    schema = _obj({"ideas": {"type": "array", "items": _obj({
+        "title": _STR, "question": _STR,
+        "events": {"type": "array", "items": _obj({
+            "date": {"type": "string", "description": "YYYY-MM-DD, erster börsenrelevanter Tag"},
+            "label": _STR, "source": {"type": "string", "description": "Wo sich das Datum belegen lässt"},
+            "confidence": {"type": "string", "enum": ["sicher", "unsicher"]},
+        })},
+        "event_type": _STR, "mechanism": _STR,
+        "expected_direction": {"type": "string", "enum": ["positiv", "negativ", "offen"]},
+        "surprise": {"type": "string", "enum": ["hoch", "mittel", "gering"]},
+        "groups": {"type": "array", "items": group},
+        "caveats": _STRS,
+    })}})
+    prompt = (
+        f"Richtung: {direction}\nThema/Interesse: {theme or '–'}\nZeitraum: {start} bis {end}\n"
+        f"Ereignisarten: {', '.join(event_types) or 'alle'}\nZweck: {purpose}\n\n"
+        "Schlage 5–8 konkrete Event-Study-Ideen vor, die mit Aktienkursen börsennotierter Unternehmen "
+        "untersuchbar sind. Je Idee: ein klar datierbares Ereignis mit Überraschungsgehalt (Binder 1985: "
+        "erwartete Schritte haben wenig Informationsgehalt), der vermutete Wirkungskanal, eine "
+        "Untersuchungsgruppe und 1–2 Kontrollgruppen, die alternative Erklärungen ausschließen.\n"
+        f"Erlaubte Regionen: {', '.join(regions)}\nErlaubte Sektoren: {', '.join(sectors)}\n"
+        f"Erlaubte Branchen: {', '.join(industries)}\n"
+        "Verwende ausschließlich Werte aus diesen Listen. Markiere ein Datum nur als 'sicher', wenn du es "
+        "sicher weißt; bei Bekanntgabe nach Börsenschluss oder am Wochenende den Folgetag angeben."
+    )
+    return _ask_json(prompt, schema)

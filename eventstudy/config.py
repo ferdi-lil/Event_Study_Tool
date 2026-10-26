@@ -31,6 +31,7 @@ MARKET_INDICES = {
     "DAX": "^GDAXI",
     "CAC 40": "^FCHI",
     "FTSE 100": "^FTSE",
+    "SMI": "^SSMI",
     "S&P 500": "^GSPC",
     "Nasdaq Composite": "^IXIC",
     "Nikkei 225": "^N225",
@@ -70,6 +71,8 @@ class Group:
     # Optional subgroup label per ticker (e.g. AI exposure High/Middle/Low)
     subgroups: dict[str, str] = field(default_factory=dict)
     selection_note: str = ""  # how the group was built, goes into the protocol
+    # Optional per-ticker metadata from the screener (country, industry, market_cap, currency)
+    meta: dict[str, dict] = field(default_factory=dict)
 
 
 @dataclass

@@ -6,9 +6,11 @@ import streamlit as st
 
 from eventstudy import ai
 from eventstudy.config import FF3_REGIONS, MARKET_INDICES, Group, StudyConfig
-from ui import style
+from eventstudy.screener import COUNTRIES, REGIONS, SECTORS, UniverseQuery, YahooScreener, \
+    industries_by_sector
 from eventstudy.universe import (categorical_columns, filter_universe, list_builtin, load_universe,
                                  parse_ticker_text, suggest_index)
+from ui import style
 
 GUIDE_TREATMENT = """
 **So findest du eine sinnvolle Untersuchungsgruppe**
@@ -28,12 +30,47 @@ Kontrollgruppen sollten ähnlich groß und ähnlich liquide sein und keine Über
 """
 
 
+ONLINE = "Online-Suche (Yahoo-Screener)"
+UPLOAD = "Eigene Datei hochladen …"
+
+
+def _screener_form(key: str) -> pd.DataFrame | None:
+    """Query listed companies by region, sector/industry and size – only when asked."""
+    c1, c2, c3 = st.columns([1.2, 1.4, 1.6])
+    regions = c1.multiselect("Region / Land", list(REGIONS) + list(COUNTRIES), default=["EU"], key=f"{key}_sc_reg")
+    labels = {v: k for k, v in SECTORS.items()}
+    sectors = [labels[x] for x in c2.multiselect("Sektoren", list(labels), key=f"{key}_sc_sec")]
+    by_sector = industries_by_sector()
+    inds = c3.multiselect("Branchen (optional)", sorted({i for s in (sectors or by_sector) for i in by_sector.get(s, [])}),
+                          key=f"{key}_sc_ind")
+    c1, c2, c3 = st.columns([1, 1, 1.2])
+    mcap = c1.number_input("Mindest-Börsenwert (Mio. USD)", 0, 1_000_000, 500, step=100, key=f"{key}_sc_mcap")
+    limit = c2.number_input("Max. Unternehmen", 10, 1000, 250, step=10, key=f"{key}_sc_max")
+    if c3.button("Suchen", key=f"{key}_sc_go", use_container_width=True, disabled=not regions):
+        q = UniverseQuery(regions, sectors=sectors, industries=inds, min_market_cap_usd=mcap * 1e6, max_results=limit)
+        bar = st.progress(0.0, "Suche …")
+        try:
+            sc = YahooScreener()
+            df = sc.search(q, progress=lambda f, t: bar.progress(f, t))
+            st.session_state[f"{key}_sc_df"] = df
+            st.session_state[f"{key}_note"] = q.describe()
+            if sc.dropped:
+                st.caption(f"{len(sc.dropped)} Treffer verworfen, weil der Firmensitz nicht in der Region liegt.")
+        except Exception as exc:  # network, Yahoo changes
+            st.error(f"Screener nicht erreichbar: {exc}")
+        bar.empty()
+    st.caption("Lädt nur Firmenlisten (keine Kurse). Ergebnisse werden 7 Tage zwischengespeichert. "
+               "Klassifikation und Börsenwert stammen von Yahoo Finance.")
+    return st.session_state.get(f"{key}_sc_df")
+
+
 def _universe_picker(key: str) -> pd.DataFrame | None:
     builtin = {p.stem: p for p in list_builtin()}
-    choice = st.selectbox("Unternehmensuniversum", ["Eigene Datei hochladen …"] + list(builtin), key=f"{key}_uni",
-                          index=1 if builtin else 0,
-                          help="Ein Universum ist eine Liste von Unternehmen mit Merkmalen (Branche, Land, "
-                               "Marktkapitalisierung). Z. B. ein Screening-Export aus Capital IQ, Refinitiv oder Bloomberg.")
+    choice = st.selectbox("Unternehmensuniversum", [ONLINE] + list(builtin) + [UPLOAD], key=f"{key}_uni",
+                          help="Online-Suche fragt börsennotierte Unternehmen nach Region, Branche und Größe ab. "
+                               "Alternativ eine eigene Liste, z. B. ein Export aus Capital IQ, Refinitiv oder Bloomberg.")
+    if choice == ONLINE:
+        return _screener_form(key)
     if choice in builtin:
         return load_universe(builtin[choice])
     up = st.file_uploader("CSV mit Unternehmensliste", type=["csv"], key=f"{key}_uni_file")
@@ -66,9 +103,15 @@ def _universe_info(uni: pd.DataFrame) -> str:
     return "\n".join(lines)
 
 
+META_COLUMNS = ["country", "industry", "market_cap", "currency"]
+
+
 def _candidates_from(df: pd.DataFrame, subgroup_col: str | None) -> pd.DataFrame:
     out = pd.DataFrame({"ticker": df["ticker"], "name": df.get("name", "")})
     out["subgroup"] = df[subgroup_col].astype(str) if subgroup_col else ""
+    for c in META_COLUMNS:
+        if c in df.columns:
+            out[c] = df[c]
     out.insert(0, "Aufnehmen", True)
     return out.reset_index(drop=True)
 
@@ -210,7 +253,9 @@ def group_editor(cfg: StudyConfig, role: str, key: str) -> None:
         cfg.groups.append(Group(
             name=name, tickers=chosen["ticker"].tolist(), role=role, market_index=market_index, ff3_region=ff3,
             names={r.ticker: str(r.name) for r in chosen.itertuples() if str(r.name) not in ("", "nan")},
-            subgroups=subs, selection_note=note))
+            subgroups=subs, selection_note=note,
+            meta={r["ticker"]: {c: r[c] for c in META_COLUMNS if c in chosen.columns and pd.notna(r[c])}
+                  for _, r in chosen.iterrows()} if any(c in chosen.columns for c in META_COLUMNS) else {}))
         for k in [k for k in st.session_state if k.startswith(key)]:
             del st.session_state[k]
         st.rerun()

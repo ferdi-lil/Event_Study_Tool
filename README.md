@@ -4,13 +4,21 @@ Kapitalmarkt-Event-Studies zu beliebigen Ereignissen, von der Gruppenauswahl bis
 Das Tool basiert auf dem Design der Bachelorarbeit *„Untersuchung der Aktienmarktreaktionen europäischer
 Tech-Unternehmen auf den EU AI Act“* (F. Lilienthal, HU Berlin 2026) und verallgemeinert es auf jedes Ereignis.
 
+## Zwei Arbeitsweisen
+
+- **Werkstatt** („Studie einrichten“): Du weißt, was du untersuchen willst, und konfigurierst die Studie Schritt für Schritt.
+- **Finder**: Du kennst nur die Richtung, z. B. „Halbleiter, EU, Regulierung“. Der Finder schlägt passende Ereignisse samt Untersuchungs- und Kontrollgruppen vor. Er arbeitet als Trichter und lädt Daten erst, wenn sie gebraucht werden:
+  1. **Ideen** aus dem kuratierten Ereigniskatalog (`catalog/events.json`) oder per KI – ohne Kursdaten
+  2. **Gruppen ermitteln** – nur Firmenlisten über den Yahoo-Screener (Region, Sektor/Branche, Börsenwert, Firmensitz geprüft)
+  3. **Als Studie öffnen** – Übergabe an die Werkstatt, dort werden Kurse geladen und gerechnet
+
 ## Funktionen
 
 - **Dashboard** mit allen Studien (Entwürfe und ausgewertete Studien), Duplizieren und Bearbeiten
 - **Assistent in 6 Schritten:** Events → Untersuchungsgruppe(n) → Kontrollgruppen → Fenster & Modell → Robustheit & Tests → Daten & Start
 - **Gruppenauswahl** auf drei Wegen:
   - *manuell* (Ticker-Liste oder CSV)
-  - *angeleitet* (Filter auf einem Unternehmensuniversum, z. B. einem Capital-IQ-Export: Region, Branche, Marktkapitalisierung, „N größte je Branche“)
+  - *angeleitet* über die **Online-Suche** (Yahoo-Screener: Region, Sektor/Branche, Mindest-Börsenwert; der Firmensitz wird je Treffer geprüft, damit z. B. Apples Xetra-Notiz nicht als deutsches Unternehmen zählt) oder über eine eigene Liste, z. B. einen Capital-IQ-Export
   - *KI-gestützt* (Claude schlägt Kriterien und Unternehmen vor, du prüfst und übernimmst)
 - **Renditemodelle:** Marktmodell, Fama-French-3-Faktoren, marktbereinigt, Constant Mean
 - **Tests:** t-Test, Wilcoxon, Patell, BMP, Kolari-Pynnönen (Korrektur für Event-Clustering), Rangtest (Corrado/Campbell-Wasley), generalisierter Vorzeichentest
